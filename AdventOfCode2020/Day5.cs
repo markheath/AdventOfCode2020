@@ -11,7 +11,7 @@ namespace AdventOfCode2020
         public (string, string) ExpectedResult { get; }
     }
 
-    class Day5 : ISolver
+    public class Day5 : ISolver
     {
         public (string, string) Solve(string[] input)
         {
@@ -23,7 +23,9 @@ namespace AdventOfCode2020
 
         public (string, string) ExpectedResult => ("965", "524");
 
+        public static int SeatId(string seat) => Convert.ToInt32(seat.Replace('F', '0').Replace('B', '1').Replace('R', '1').Replace('L', '0'), 2);
+
         private HashSet<int> ParseSeats(string[] input) => 
-            input.Select(x => Convert.ToInt32(x.Replace('F', '0').Replace('B', '1').Replace('R', '1').Replace('L', '0'), 2)).ToHashSet();
+            input.Select(SeatId).ToHashSet();
     }
 }
