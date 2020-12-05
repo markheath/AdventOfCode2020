@@ -24,4 +24,6 @@ namespace UnitTests
             Assert.AreEqual(("7", "336"), solution);
         }
     }
+
+
 }
