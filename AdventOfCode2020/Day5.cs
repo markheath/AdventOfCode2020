@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace AdventOfCode2020
 {
-    interface ISolver
-    {
-        public (string,string) Solve(string[] input);
-        public (string, string) ExpectedResult { get; }
-    }
 
     public class Day5 : ISolver
     {
