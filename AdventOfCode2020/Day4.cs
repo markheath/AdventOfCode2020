@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MoreLinq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,25 +14,10 @@ namespace AdventOfCode2020
 
 		IEnumerable<Dictionary<string, string>> ParsePassports(IEnumerable<string> lines)
 		{
-			var currentPassport = new Dictionary<string, string>();
-			foreach (var line in lines)
-			{
-				if (String.IsNullOrWhiteSpace(line))
-				{
-					yield return currentPassport;
-					currentPassport = new Dictionary<string, string>();
-				}
-				else
-				{
-					foreach (var property in line.Split(' '))
-					{
-						var bits = property.Split(':');
-
-						currentPassport[bits[0]] = bits[1];
-					}
-				}
-			}
-			yield return currentPassport;
+			return lines.Split("")
+				.Select(b => b.SelectMany(line => line.Split(' '))
+					.Select(p => p.Split(':'))
+					.ToDictionary(p => p[0], p => p[1]));
 		}
 
 		bool IsPassportValid(Dictionary<string, string> passport)
