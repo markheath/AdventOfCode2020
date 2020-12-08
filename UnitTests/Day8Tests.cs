@@ -19,7 +19,7 @@ jmp -4
 acc +6".Split("\r\n");
             var solver = new Day8();
             var solution = solver.Solve(testInput);
-            Assert.AreEqual(("5", ""), solution);
+            Assert.AreEqual(("5", "8"), solution);
         }
 
         [Test]
