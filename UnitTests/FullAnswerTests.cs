@@ -14,7 +14,9 @@ namespace UnitTests
             var solvers = typeof(Day1).Assembly.GetTypes().Where(t => t.IsClass && typeof(ISolver).IsAssignableFrom(t));
             foreach(var solver in solvers)
             {
-                var input = File.ReadAllLines(Utils.FindPath($"Input\\{solver.Name}.txt"));
+                var path = Utils.FindPath($"Input\\{solver.Name}.txt");
+                if (path == null) throw new InvalidDataException($"No data file for {solver.Name}");
+                var input = File.ReadAllLines(path);
                 yield return new TestCaseData((ISolver)Activator.CreateInstance(solver), input).SetName(solver.Name);
             }
         }
