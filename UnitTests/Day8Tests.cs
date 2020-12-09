@@ -30,5 +30,4 @@ acc +6".Split("\r\n");
             Assert.AreEqual(6, ins.Argument);
         }
     }
-
 }
