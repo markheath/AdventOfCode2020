@@ -7,7 +7,7 @@ namespace AdventOfCode2020
     {
         static void Main(string[] args)
         {            
-            var solver = new Day9();
+            var solver = new Day10();
             var input =  File.ReadAllLines(Utils.FindPath($"Input/{solver.GetType().Name}.txt"));
             var (a,b) = solver.Solve(input);
             Console.WriteLine($"ResultA: {a}");
