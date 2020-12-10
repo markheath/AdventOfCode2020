@@ -20,7 +20,7 @@ namespace UnitTests
 6
 12
 4".Split("\r\n");
-            var answer = Day10.UseAll(0,0,Day10.ParseAdapters(testInput),0);
+            var answer = Day10.UseAll(Day10.ParseAdapters(testInput));
             Assert.AreEqual(7 * 5, answer);
         }
 
@@ -58,7 +58,7 @@ namespace UnitTests
 34
 10
 3".Split("\r\n");
-            var answer = Day10.UseAll(0, 0, Day10.ParseAdapters(testInput), 0);
+            var answer = Day10.UseAll(Day10.ParseAdapters(testInput));
             Assert.AreEqual(220, answer);
         }
 

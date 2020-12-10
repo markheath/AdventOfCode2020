@@ -1,4 +1,4 @@
-﻿using MoreLinq;
+﻿//using static MoreLinq.Extensions.PairwiseExtension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,14 +12,16 @@ namespace AdventOfCode2020
         public (string, string) Solve(string[] input)
         {
             var adapters = ParseAdapters(input);
-            var part1 = UseAll(0, 0, adapters, 0);
+            var part1 = UseAll(adapters);
             var part2 = CountCombinations(adapters);
             return (part1.ToString(), part2.ToString());
         }
         public static List<Adapter> ParseAdapters(string[] input)
         {
-            var adapters = input.Select(int.Parse).Select(j => new Adapter(j))
-                .OrderBy(a => a.Joltage)
+            var adapters = input.Select(int.Parse)
+                .Prepend(0)
+                .Select(j => new Adapter(j))
+                .OrderBy(a => a.Joltage)                
                 .ToList();
             var builtInAdapter = new Adapter(adapters.Max(a => a.Joltage) + 3);
             adapters.Add(builtInAdapter);
@@ -28,7 +30,6 @@ namespace AdventOfCode2020
 
         public static long CountCombinations(List<Adapter> adapters)
         {
-            adapters.Insert(0, new Adapter(0));
             var index = adapters.Count - 1;
             var optionsFrom = new Dictionary<int, long>();
             optionsFrom[index] = 1;
@@ -46,30 +47,26 @@ namespace AdventOfCode2020
             return optionsFrom[0];
         }
 
-        public static int UseAll(int jump1, int jump3, List<Adapter> remaining, int currentJoltage)
+        public static int UseAll(List<Adapter> remaining)
         {
-            foreach(var adapter in remaining.Where(a => a.CanAccept(currentJoltage)))
-            {
-                var j1 = jump1;
-                var j3 = jump3;
-                if (adapter.Joltage - currentJoltage == 3)
-                    j3++;
-                if (adapter.Joltage - currentJoltage == 1)
-                    j1++; 
-                if (remaining.Count == 1)
-                {
 
-                    // found solution
-                    return j1 * j3;
-                }
-                else
-                {
-                    var solution = UseAll(j1, j3, remaining.Where(a => a != adapter).ToList(), adapter.Joltage);
-                    if (solution != -1)
-                        return solution;
-                }
+            var jump1 = 0;
+            var jump3 = 0;
+            for (int n = 0; n < remaining.Count - 1; n++)
+            {
+                var diff = remaining[n + 1].Joltage - remaining[n].Joltage;
+                if (diff == 3)
+                    jump3++;
+                if (diff == 1)
+                    jump1++;
             }
-            return -1;
+            return jump1 * jump3;
+        }
+
+        public static bool Accepts(int from, int to)
+        {
+            var diff = from - to;
+            return diff >= 1 && diff <= 3;
         }
 
         public class Adapter
