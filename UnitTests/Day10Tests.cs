@@ -122,7 +122,7 @@ namespace UnitTests
         [TestCase("1,2,3,4", 7)]
         public void CountCombinations(string input, long expected)
         {
-            var adapters  = input.Split(',').Select(j => new Day10.Adapter(int.Parse(j))).ToList();
+            var adapters  = input.Split(',').Select(int.Parse).Prepend(0).ToList();
             var answer = Day10.CountCombinations(adapters);
             Assert.AreEqual(expected, answer);
         }
