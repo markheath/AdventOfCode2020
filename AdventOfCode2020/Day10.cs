@@ -1,5 +1,4 @@
-﻿//using static MoreLinq.Extensions.PairwiseExtension;
-using System;
+﻿using static MoreLinq.Extensions.PairwiseExtension;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -46,19 +45,11 @@ namespace AdventOfCode2020
             return optionsFrom[0];
         }
 
-        public static int UseAll(List<int> adapters)
+        public static int UseAll(IEnumerable<int> adapters)
         {
-
-            var jump1 = 0;
-            var jump3 = 0;
-            for (int n = 0; n < adapters.Count - 1; n++)
-            {
-                var diff = adapters[n + 1] - adapters[n];
-                if (diff == 3)
-                    jump3++;
-                if (diff == 1)
-                    jump1++;
-            }
+            var (jump1,jump3) = adapters
+                .Pairwise((a, b) => b - a)
+                .Aggregate((0, 0), (acc, n) => n == 1 ? (acc.Item1 + 1, acc.Item2) : n == 3 ? (acc.Item1, acc.Item2 + 1) : acc);
             return jump1 * jump3;
         }
 
