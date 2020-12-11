@@ -62,18 +62,15 @@ namespace AdventOfCode2020
 
         public static int CountAdjacent2(string[] map, int row, int col)
         {
-            var adjacent = 0;
-            foreach(var d in directions)
-            {
-                var firstNonFloor = MoreEnumerable.Generate((row, col), p => (d.Item1 + p.row, d.Item2 + p.col))
+            return directions.
+                Select(d =>
+                MoreEnumerable.Generate((row, col), 
+                    p => (d.Item1 + p.row, d.Item2 + p.col))
                     .Skip(1) // ignore initial position
                     .Select(p => map.Get(p))
                     .SkipWhile(c => c == '.')
-                    .First();
-                if (firstNonFloor == '#')
-                    adjacent++;
-            }
-            return adjacent;
+                    .First())
+                .Count(x => x == '#');
         }
 
         public static (bool, string[]) Mutate(string[] map, int occupiedThreshold,
