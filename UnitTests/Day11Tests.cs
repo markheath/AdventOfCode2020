@@ -19,7 +19,7 @@ LLLLLLLLLL
 L.LLLLLL.L
 L.LLLLL.LL".Split("\r\n");
             var answer = new Day11().Solve(testInput);
-            Assert.AreEqual(("a","b"), answer);
+            Assert.AreEqual(("37",""), answer);
         }
     }
 }

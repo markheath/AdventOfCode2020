@@ -8,7 +8,7 @@ namespace AdventOfCode2020
 
     public class Day11 : ISolver
     {
-        public (string, string) ExpectedResult => ("", "");
+        public (string, string) ExpectedResult => ("2354", "");
 
         public (string, string) Solve(string[] input)
         {
@@ -28,7 +28,7 @@ namespace AdventOfCode2020
         {
             var x = from r in Enumerable.Range(row - 1, 3)
             from c in Enumerable.Range(col - 1, 3)
-            where r > 0 && c > 0 && r < map.Length && c < map[0].Length
+            where r >= 0 && c >= 0 && r < map.Length && c < map[0].Length
             where !(r == row && c == col)
             where map[r][c] == '#'
             select 1;
@@ -51,7 +51,7 @@ namespace AdventOfCode2020
                         sb.Append('#');
                         mutated = true;
                     }
-                    else if (map[r][c] == '#' && adjacent == 4)
+                    else if (map[r][c] == '#' && adjacent >= 4)
                     {
                         sb.Append('L');
                         mutated = true;
