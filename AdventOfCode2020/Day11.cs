@@ -17,7 +17,7 @@ namespace AdventOfCode2020
             return map[r][c];
         }
         public static (int, int) Add(this (int, int) a, (int, int) b)
-            => (a.Item1 + b.Item1, a.Item2 * b.Item1);
+            => (a.Item1 + b.Item1, a.Item2 + b.Item2);
     }
 
 
@@ -34,7 +34,7 @@ namespace AdventOfCode2020
         }
 
         private static int Solve(string[] map, int occupiedThreshold,
-            Func<string[],int,int,int> countAdjacent)
+            Func<string[],(int,int),int> countAdjacent)
         {
             var iterations = 0;
             var mutated = false;
@@ -52,20 +52,20 @@ namespace AdventOfCode2020
             (0,-1), (0,1),
             (1,-1), (1,0), (1,1)
         };
-        public static int CountAdjacent1(string[] map, int row, int col)
+        public static int CountAdjacent1(string[] map, (int,int) coords)
         {
 
             return directions
-                .Select(d => (d.Item1 + row, d.Item2 + col))
+                .Select(d => d.Add(coords))
                 .Count(p => map.Get(p) == '#');
         }
 
-        public static int CountAdjacent2(string[] map, int row, int col)
+        public static int CountAdjacent2(string[] map, (int,int) coords)
         {
             return directions.
                 Select(d =>
-                MoreEnumerable.Generate((row, col), 
-                    p => (d.Item1 + p.row, d.Item2 + p.col))
+                MoreEnumerable.Generate(coords, 
+                    p => d.Add(p))
                     .Skip(1) // ignore initial position
                     .Select(p => map.Get(p))
                     .SkipWhile(c => c == '.')
@@ -74,7 +74,7 @@ namespace AdventOfCode2020
         }
 
         public static (bool, string[]) Mutate(string[] map, int occupiedThreshold,
-            Func<string[],int,int,int> countAdjacent)
+            Func<string[],(int,int),int> countAdjacent)
         {
             bool mutated = false;
 
@@ -84,7 +84,7 @@ namespace AdventOfCode2020
                 var sb = new StringBuilder();
                 for(var c = 0; c < map[r].Length; c++)
                 {
-                    var adjacent = countAdjacent(map, r, c);
+                    var adjacent = countAdjacent(map, (r, c));
                     if (map[r][c] == 'L' && adjacent == 0)
                     {
                         sb.Append('#');

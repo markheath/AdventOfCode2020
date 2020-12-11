@@ -34,7 +34,7 @@ L.LLLLL.LL".Split("\r\n");
 .........
 #........
 ...#.....".Split("\r\n");
-            var seats = Day11.CountAdjacent2(map, 4, 3);
+            var seats = Day11.CountAdjacent2(map, (4, 3));
             Assert.AreEqual(8, seats);
         }
     }
