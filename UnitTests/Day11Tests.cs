@@ -19,7 +19,23 @@ LLLLLLLLLL
 L.LLLLLL.L
 L.LLLLL.LL".Split("\r\n");
             var answer = new Day11().Solve(testInput);
-            Assert.AreEqual(("37",""), answer);
+            Assert.AreEqual(("37","26"), answer);
+        }
+
+        [Test]
+        public void CountAdjacent2()
+        {
+            var map = @".......#.
+...#.....
+.#.......
+.........
+..#L....#
+....#....
+.........
+#........
+...#.....".Split("\r\n");
+            var seats = Day11.CountAdjacent2(map, 4, 3);
+            Assert.AreEqual(8, seats);
         }
     }
 }
