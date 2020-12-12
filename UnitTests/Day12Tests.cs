@@ -14,7 +14,7 @@ F7
 R90
 F11".Split("\r\n");
             var answer = new Day12().Solve(testInput);
-            Assert.AreEqual(("25", ""), answer);
+            Assert.AreEqual(("25", "286"), answer);
         }
     }
 }
