@@ -23,3 +23,4 @@ Some notes on each day's solution.
 - **Day 11** - was a nice puzzle based on Conway's Game of Life. Part 2 pushed me to make my solution a bit more functional for the adjacency counting than it was previously, and I used MoreLinq's handy `Generate` method.
 - **Day 12** - was a good example of a puzzle where LINQ's `Aggregate` method is more than sufficient to apply the instructions and track the state.
 - **Day 13** - part 1 was nice and easy to solve with LINQ. Part 2 could be solved brute force but was way too slow. I ended up needing some help to get it optimized. Aparrently Chinese Remainder Theorem can be applied to this puzzle.
+- **Day 14** - fun with bitmasks. Not especially hard, but I managed to get my ANDs and ORs muddled up enough for this to take me a while. Haven't had a chance to clean up the code yet.
