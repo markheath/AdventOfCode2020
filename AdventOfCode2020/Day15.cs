@@ -7,23 +7,23 @@ namespace AdventOfCode2020
 {
     public class Day15 : ISolver
     {
-        public (string, string) ExpectedResult => ("763", "");
+        public (string, string) ExpectedResult => ("763", "1876406");
 
         public (string, string) Solve(string[] input)
         {
-            var part1 = SolvePart1(input[0].Split(',')
-                            .Select(int.Parse).ToList());
-            return (part1.ToString(), "");
+            var part1 = Solve(input[0].Split(',')
+                            .Select(int.Parse).ToList(), 2020);
+            var part2 = Solve(input[0].Split(',')
+                .Select(int.Parse).ToList(), 30000000);
+            return (part1.ToString(), part2.ToString());
         }
 
-        public static int SolvePart1(IList<int> starting)
+        public static int Solve(IList<int> starting, int turns)
         {
-            var memory = new Dictionary<int, int>();             
-
+            var memory = new Dictionary<int, int>();         
             var last = 0;
 
-
-            for (var turn = 1; turn <= 2020; turn++)
+            for (var turn = 1; turn <= turns; turn++)
             {
                 var newNumber = 0;
                 if (turn <= starting.Count)
