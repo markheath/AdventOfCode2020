@@ -1,38 +1,85 @@
-﻿using MoreLinq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using static MoreLinq.Extensions.SplitExtension;
 
 namespace AdventOfCode2020
 {
     public class Day16 : ISolver
     {
-        public (string, string) ExpectedResult => ("23044", "");
+        public (string, string) ExpectedResult => ("23044", "3765150732757");
 
         public (string, string) Solve(string[] input)
         {
             var parts = input.Split("").ToList();
-            var rules = parts[0].Select(r => new Rule(r)).ToList();
             var myTicket = new Ticket(parts[1].Last());
+            var rules = parts[0].Select(r => new Rule(r)).ToList();
             var nearbyTickets = parts[2].Skip(1).Select(t => new Ticket(t)).ToList();
-            var scanningError = nearbyTickets.Sum(n => n.ScanningError(rules));
+            var part1 = nearbyTickets.Sum(n => n.ScanningError(rules));
 
-            return (scanningError.ToString(), "");
+            // part 2 step 1 - find valid tickets (checking scanning error doesn't work - probably some invalid tickets have 0 values)
+            var validTickets = nearbyTickets.Where(t => t.IsValid(rules)).ToList();
+
+            // part 2 step 2 - eliminate invalid rules for each position
+            var possibleRules = new Dictionary<int, HashSet<Rule>>();
+            for(var position = 0; position < myTicket.Values.Length; position++)
+            {
+                possibleRules[position] = rules.ToHashSet();
+                foreach(var t in validTickets)
+                {
+                    foreach(var r in rules)
+                    {
+                        if(!r.IsValid(t.Values[position]))
+                        {
+                            possibleRules[position].Remove(r);
+                        }
+                    }
+                }
+            }
+
+            // part 3 - pick out the one rule for each position
+            var positionRules = new Dictionary<int, Rule>();
+            while(possibleRules.Count > 0)
+            {
+                var solved = possibleRules.First(kvp => kvp.Value.Count == 1);
+                var solvedRule = solved.Value.Single();
+                positionRules.Add(solved.Key, solvedRule);
+                possibleRules.Remove(solved.Key);
+                // exclude this rule from all unsolved position
+                foreach(var pr in possibleRules)
+                {
+                    pr.Value.Remove(solvedRule);
+                }
+            }
+
+            // part 4 -multiply six fields on your ticket that start with the word departure
+            var part2 = positionRules
+                            .Where(kvp => kvp.Value.Name.StartsWith("departure"))
+                            .Select(kvp => (long)myTicket.Values[kvp.Key])
+                            .Aggregate((a, b) => a * b);
+
+            return (part1.ToString(), part2.ToString());
         }
 
         public class Ticket
         {
             private readonly string ticket;
             public override string ToString() => ticket;
-            private int[] values;
+            public int[] Values { get;  }
             public Ticket(string ticket)
             {
-                values = ticket.Split(',').Select(int.Parse).ToArray();
+                Values = ticket.Split(',').Select(int.Parse).ToArray();
                 this.ticket = ticket;
             }
             public int ScanningError(IEnumerable<Rule> rules)
             {
-                return values.Where(v => rules.All(r => !r.IsValid(v))).Sum();
+                return Values.Where(v => rules.All(r => !r.IsValid(v))).Sum();
+            }
+            public bool IsValid(IEnumerable<Rule> rules)
+            {
+                // it's invalid if there is any value which doesn't meet any rules
+                var invalid = Values.Any(v => rules.All(r => !r.IsValid(v)));
+                return !invalid;
             }
         }
 
@@ -52,10 +99,10 @@ namespace AdventOfCode2020
                 this.rule = rule;
             }
             public string Name { get; }
-            public bool IsValid(int n)
+            public bool IsValid(int value)
             {
-                return (n >= range1.Item1 && n <= range1.Item2) ||
-                    (n >= range2.Item1 && n <= range2.Item2);
+                return (value >= range1.Item1 && value <= range1.Item2) ||
+                    (value >= range2.Item1 && value <= range2.Item2);
             }
 
         }
