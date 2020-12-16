@@ -20,12 +20,12 @@ nearby tickets:
 40,4,50
 55,2,20
 38,6,12".Split("\r\n");
-            var answer = new Day16().Solve(testInput);
-            Assert.AreEqual(("71", ""), answer);
+            var (_,rules,tickets) = Day16.ParseInput(testInput);
+            var scanningError = Day16.TotalScanningError(rules, tickets);
+            Assert.AreEqual(71, scanningError);
         }
 
-        // need to refactor the code to get this passing
-        // [Test]
+        [Test]
         public void SolvePart2WithTestInput()
         {
             var testInput = @"class: 0-1 or 4-19
@@ -39,8 +39,11 @@ nearby tickets:
 3,9,18
 15,1,5
 5,14,9".Split("\r\n");
-            var answer = new Day16().Solve(testInput);
-            Assert.AreEqual(("", ""), answer);
+            var (_, rules, tickets) = Day16.ParseInput(testInput);
+            var solution = Day16.SolvePositionRules(rules, tickets);
+            Assert.AreEqual("row", solution[0].Name);
+            Assert.AreEqual("class", solution[1].Name);
+            Assert.AreEqual("seat", solution[2].Name);
         }
     }
 }
