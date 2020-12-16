@@ -23,24 +23,22 @@ namespace AdventOfCode2020
             var memory = new Dictionary<int, int>();         
             var last = 0;
 
-            for (var turn = 1; turn <= turns; turn++)
+            foreach (var turn in Enumerable.Range(0, turns))
             {
                 var newNumber = 0;
-                if (turn <= starting.Count)
+                if (turn < starting.Count)
                 {
-                    newNumber = starting[turn - 1];
+                    newNumber = starting[turn];
                 }
-                else
+                else if (memory.ContainsKey(last))
                 {
-                    if (memory.ContainsKey(last))
-                    {
-                        newNumber = turn - 1 - memory[last];
-                    }
+                    newNumber = turn - memory[last];
                 }
-
-                if (turn > 1)
+                
+                // only remember the last number after generating the new number
+                if (turn > 0)
                 {
-                    memory[last] = turn - 1;
+                    memory[last] = turn;
                 }
                 last = newNumber;
             }
