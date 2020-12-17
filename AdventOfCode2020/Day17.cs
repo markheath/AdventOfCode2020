@@ -37,64 +37,34 @@ namespace AdventOfCode2020
             select (x, y, 0, 0);
         }
 
-        public IEnumerable<(int,int,int,int)> AllMutatableCells3D()
+        public IEnumerable<(int, int, int, int)> AllMutatableCells(int dim)
         {
             return
             from x in Enumerable.Range(minX - 1, maxX - minX + 3)
             from y in Enumerable.Range(minY - 1, maxY - minY + 3)
             from z in Enumerable.Range(minZ - 1, maxZ - minZ + 3)
-            select (x, y, z, 0);
-        }
-
-        public IEnumerable<(int, int, int, int)> AllMutatableCells4D()
-        {
-            return
-            from x in Enumerable.Range(minX - 1, maxX - minX + 3)
-            from y in Enumerable.Range(minY - 1, maxY - minY + 3)
-            from z in Enumerable.Range(minZ - 1, maxZ - minZ + 3)
-            from w in Enumerable.Range(minW - 1, maxW - minW + 3)
+            from w in dim == 4 ? Enumerable.Range(minW - 1, maxW - minW + 3) : new[] { 0 }
             select (x, y, z, w);
         }
 
-        public IEnumerable<(int, int, int, int)> AllAdjacentCells3D((int, int, int, int) cell)
+        public IEnumerable<(int, int, int, int)> AllAdjacentCells((int, int, int, int) cell,int dim)
         {
             var (x, y, z, w) = cell;
             return
             from dx in Enumerable.Range(-1, 3)
             from dy in Enumerable.Range(-1, 3)
             from dz in Enumerable.Range(-1, 3)
-            where !((dx == 0) && (dy == 0) && (dz == 0))
-            select (x + dx, y + dy, z + dz, 0);
-        }
-
-        public IEnumerable<(int, int, int, int)> AllAdjacentCells4D((int, int, int, int) cell)
-        {
-            var (x, y, z, w) = cell;
-            return
-            from dx in Enumerable.Range(-1, 3)
-            from dy in Enumerable.Range(-1, 3)
-            from dz in Enumerable.Range(-1, 3)
-            from dw in Enumerable.Range(-1, 3)
+            from dw in dim == 4 ? Enumerable.Range(-1, 3) : new[] { 0 }
             where !((dx == 0) && (dy == 0) && (dz == 0) && (dw == 0))
             select (x + dx, y + dy, z + dz, w + dw);
         }
 
-        public bool GetNextState3D((int,int,int,int) cell)
+        public bool GetNextState((int, int, int, int) cell, int dim)
         {
             var currentState = occupiedCells.Contains(cell);
-            var adjacent = AllAdjacentCells3D(cell).Count(c => occupiedCells.Contains(c));
-            if (currentState)
-                return adjacent == 2 || adjacent == 3;
-            return adjacent == 3;
-        }
-
-        public bool GetNextState4D((int, int, int, int) cell)
-        {
-            var currentState = occupiedCells.Contains(cell);
-            // Take to optimize
-            var adjacent = AllAdjacentCells4D(cell)
+            var adjacent = AllAdjacentCells(cell, dim)
                 .Where(c => occupiedCells.Contains(c))
-                .Take(4).Count();
+                .Take(4).Count(); // optimize because highest adjacent count we need is 3
             if (currentState)
                 return adjacent == 2 || adjacent == 3;
             return adjacent == 3;
@@ -114,30 +84,25 @@ namespace AdventOfCode2020
             occupiedCells.Add(cell);
         }
 
-        public ConwayCube Mutate3D()
+        public ConwayCube Mutate(int dim)
         {
-            return new ConwayCube(AllMutatableCells3D().Where(GetNextState3D));            
-        }
-        public ConwayCube Mutate4D()
-        {
-            return new ConwayCube(AllMutatableCells4D().Where(GetNextState4D));
+            return new ConwayCube(AllMutatableCells(dim).Where(x => GetNextState(x,dim)));     
         }
     }
 
 
     public class Day17 : ISolver
     {
-
         public (string, string) ExpectedResult => ("353", "2472");
 
         public (string, string) Solve(string[] input)
         {
             var cube = new ConwayCube(input);
-            for(var n = 0; n < 6; n++) cube = cube.Mutate3D();
+            for(var n = 0; n < 6; n++) cube = cube.Mutate(3);
             var part1 = cube.ActiveCells;
 
             cube = new ConwayCube(input);
-            for (var n = 0; n < 6; n++) cube = cube.Mutate4D();
+            for (var n = 0; n < 6; n++) cube = cube.Mutate(4);
             var part2 = cube.ActiveCells;
 
             return (part1.ToString(), part2.ToString());
