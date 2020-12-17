@@ -8,9 +8,11 @@ namespace UnitTests
         [Test]
         public void SolveWithTestInput()
         {
-            var testInput = @"".Split("\r\n");
+            var testInput = @".#.
+..#
+###".Split("\r\n");
             var answer = new Day17().Solve(testInput);
-            Assert.AreEqual(("a", "b"), answer);
+            Assert.AreEqual(("112", ""), answer);
         }
     }
 }
