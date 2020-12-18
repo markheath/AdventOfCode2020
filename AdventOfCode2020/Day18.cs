@@ -31,9 +31,22 @@ namespace AdventOfCode2020
 
         class Equation : Token
         {
-            public Equation()
+            public Equation(string equation)
             {
                 Tokens = new List<Token>();
+                for (int n = 0; n < equation.Length; n++)
+                {
+                    var c = equation[n];
+                    if (char.IsDigit(c)) Tokens.Add(new Number(c - '0'));
+                    else if (c == '*') Tokens.Add(new Multiply());
+                    else if (c == '+') Tokens.Add(new Add());
+                    else if (c == '(')
+                    {
+                        var subEq = ExtractBetweenMatchingBrackets(equation, n);
+                        Tokens.Add(new Equation(subEq));
+                        n += subEq.Length;
+                    }
+                }
             }
             public List<Token> Tokens { get; }
 
@@ -70,25 +83,6 @@ namespace AdventOfCode2020
             }
         }
 
-        static Equation Tokenize(string equation)
-        {
-            var eq = new Equation();
-            for(int n = 0; n < equation.Length; n++)
-            {
-                var c = equation[n];
-                if (char.IsDigit(c)) eq.Tokens.Add(new Number(c - '0'));
-                else if (c == '*') eq.Tokens.Add(new Multiply());
-                else if (c == '+') eq.Tokens.Add(new Add());
-                else if (c == '(')
-                {
-                    var subEq = ExtractBetweenMatchingBrackets(equation, n);
-                    eq.Tokens.Add(Tokenize(subEq));
-                    n += subEq.Length;
-                }
-            }
-            return eq;
-        }
-
         static string ExtractBetweenMatchingBrackets(string s, int startPos)
         {
             // find matching end bracket
@@ -115,7 +109,7 @@ namespace AdventOfCode2020
 
         public static long SolveEquation2(string equation)
         {
-            var eq = Tokenize(equation);
+            var eq = new Equation(equation);
             return eq.Solve();
         }
 
