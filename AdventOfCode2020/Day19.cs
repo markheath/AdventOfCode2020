@@ -1,4 +1,4 @@
-﻿using MoreLinq;
+﻿using static MoreLinq.Extensions.SplitExtension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,8 @@ namespace AdventOfCode2020
         public (string, string) Solve(string[] input)
         {
             var part1 = CountValidMessages(input);
-            return (part1.ToString(), "");
+            var part2 = CountValidMessages2(input);
+            return (part1.ToString(), part2.ToString());
         }
 
         public static int CountValidMessages(string[] input)
@@ -21,6 +22,16 @@ namespace AdventOfCode2020
             var ruleset = new RuleSet(sections[0]);
             return sections[1].Count(m => ruleset.IsFullMatch(m));
         }
+
+        public static int CountValidMessages2(string[] input)
+        {
+            var sections = input.Split("").ToArray();
+            var ruleset = new RuleSet(sections[0]);
+            ruleset.UpdateRule("8: 42 | 42 8");
+            ruleset.UpdateRule("11: 42 31 | 42 11 31");
+            return sections[1].Count(m => ruleset.IsFullMatch(m));
+        }
+
 
         public class RuleSet
         {
@@ -60,9 +71,16 @@ namespace AdventOfCode2020
                         }
                         isMatched |= sequenceMatch;
                         if (isMatched) return (true, currentPos);
+                        // bug is here need to also explore further matches as there could be more than one
                     }
                     return (false, startPos);
                 }
+            }
+
+            public void UpdateRule(string ruleDef)
+            {
+                var rule = new Rule(ruleDef);
+                Rules[rule.Id] = rule;            
             }
 
         }
