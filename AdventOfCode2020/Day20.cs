@@ -21,6 +21,14 @@ namespace AdventOfCode2020
             private string RightEdge { get; }
             private string RightEdgeRev { get; }
 
+            public enum Side
+            {
+                Top,
+                Right,
+                Bottom,
+                Left
+            }
+            public Dictionary<Side,Tile> Connected { get; } = new Dictionary<Side,Tile>();
             public Tile(IEnumerable<string> input)
             {
                 int Int(string s) => int.Parse(Regex.Match(s, "\\d+").Value);
@@ -37,21 +45,19 @@ namespace AdventOfCode2020
             }
             public int Id { get; }
             public string[] Pattern { get; }
+           
             
-            public List<Tile> TopMatches { get; } = new List<Tile>();
-            public List<Tile> LeftMatches { get; } = new List<Tile>();
-            public List<Tile> BottomMatches { get; } = new List<Tile>();
-            public List<Tile> RightMatches { get; } = new List<Tile>();
-            public bool IsComplete { get; private set; }
 
-            public void Complete()
-            {
-                IsComplete = true;
-            }
             public bool IsCorner()
             {
-                return (TopMatches.Count == 0 || BottomMatches.Count == 0) &&
-                    (LeftMatches.Count == 0 || RightMatches.Count == 0);
+                return (!Connected.ContainsKey(Side.Top) || !Connected.ContainsKey(Side.Bottom)) &&
+                    (!Connected.ContainsKey(Side.Left) || !Connected.ContainsKey(Side.Right));
+            }
+            public void Connect(Side side, Tile tile)
+            {
+                if (Connected.ContainsKey(side))
+                    throw new InvalidOperationException("Already connected");
+                Connected[side] = tile;
             }
 
             public void Match(Tile other)
@@ -60,102 +66,102 @@ namespace AdventOfCode2020
                 if (TopEdge == other.TopEdge ||
                     TopEdgeRev == other.TopEdge)
                 {
-                    TopMatches.Add(other);
-                    other.TopMatches.Add(this);
+                    Connect(Side.Top, other);
+                    other.Connect(Side.Top, this);
                 }
                 if (TopEdge == other.BottomEdge ||
                     TopEdgeRev == other.BottomEdge)
                 {
-                    TopMatches.Add(other);
-                    other.BottomMatches.Add(this);
+                    Connect(Side.Top, other);
+                    other.Connect(Side.Bottom, this);
                 }
                 if (TopEdge == other.RightEdge ||
                     TopEdgeRev == other.RightEdge)
                 {
-                    TopMatches.Add(other);
-                    other.RightMatches.Add(this);
+                    Connect(Side.Top, other);
+                    other.Connect(Side.Right, this);
                 }
                 if (TopEdge == other.LeftEdge ||
                     TopEdgeRev == other.LeftEdge)
                 {
-                    TopMatches.Add(other);
-                    other.LeftMatches.Add(this);
+                    Connect(Side.Top, other);
+                    other.Connect(Side.Left, this);
                 }
 
                 if (BottomEdge == other.TopEdge ||
                     BottomEdgeRev == other.TopEdge)
                 {
-                    BottomMatches.Add(other);
-                    other.TopMatches.Add(this);
+                    Connect(Side.Bottom, other);
+                    other.Connect(Side.Top, this);
                 }
                 if (BottomEdge == other.BottomEdge ||
                     BottomEdgeRev == other.BottomEdge)
                 {
-                    BottomMatches.Add(other);
-                    other.BottomMatches.Add(this);
+                    Connect(Side.Bottom, other);
+                    other.Connect(Side.Bottom, this);
                 }
                 if (BottomEdge == other.RightEdge ||
                     BottomEdgeRev == other.RightEdge)
                 {
-                    BottomMatches.Add(other);
-                    other.RightMatches.Add(this);
+                    Connect(Side.Bottom, other);
+                    other.Connect(Side.Right, this);
                 }
                 if (BottomEdge == other.LeftEdge ||
                     BottomEdgeRev == other.LeftEdge)
                 {
-                    BottomMatches.Add(other);
-                    other.LeftMatches.Add(this);
+                    Connect(Side.Bottom, other);
+                    other.Connect(Side.Left, this);
                 }
 
                 if (LeftEdge == other.LeftEdge ||
                     LeftEdgeRev == other.LeftEdge)
                 {
-                    LeftMatches.Add(other);
-                    other.LeftMatches.Add(this);
+                    Connect(Side.Left, other);
+                    other.Connect(Side.Left, this);
                 }
                 if (LeftEdge == other.RightEdge ||
                     LeftEdgeRev == other.RightEdge)
                 {
-                    LeftMatches.Add(other);
-                    other.RightMatches.Add(this);
+                    Connect(Side.Left, other);
+                    other.Connect(Side.Right, this);
                 }
                 if (LeftEdge == other.TopEdge ||
                     LeftEdgeRev == other.TopEdge)
                 {
-                    LeftMatches.Add(other);
-                    other.TopMatches.Add(this);
+                    Connect(Side.Left, other);
+                    other.Connect(Side.Top, this);
                 }
                 if (LeftEdge == other.BottomEdge ||
                     LeftEdgeRev == other.BottomEdge)
                 {
-                    LeftMatches.Add(other);
-                    other.BottomMatches.Add(this);
+                    Connect(Side.Left, other);
+                    other.Connect(Side.Bottom, this);
                 }
 
 
                 if (RightEdge == other.LeftEdge ||
                     RightEdgeRev == other.LeftEdge)
                 {
-                    RightMatches.Add(other);
-                    other.LeftMatches.Add(this);
+                    Connect(Side.Right, other);
+                    other.Connect(Side.Left, this);
                 }
                 if (RightEdge == other.RightEdge ||
                     RightEdgeRev == other.RightEdge)
                 {
-                    RightMatches.Add(other);
-                    other.RightMatches.Add(this);
+                    Connect(Side.Right, other);
+                    other.Connect(Side.Right, this);
                 }
                 if (RightEdge == other.TopEdge ||
                     RightEdgeRev == other.TopEdge)
                 {
-                    RightMatches.Add(other);
-                    other.TopMatches.Add(this);
+                    Connect(Side.Right, other);
+                    other.Connect(Side.Top, this);
                 }
                 if (RightEdge == other.BottomEdge ||
                     RightEdgeRev == other.BottomEdge)
                 {
-                    RightMatches.Add(other);
-                    other.BottomMatches.Add(this);
+                    Connect(Side.Right, other);
+                    other.Connect(Side.Bottom, this);
                 }
             }
         }
