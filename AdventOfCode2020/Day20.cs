@@ -1,5 +1,6 @@
 ﻿using System;
 using static MoreLinq.Extensions.SplitExtension;
+using static MoreLinq.Extensions.CartesianExtension;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
@@ -12,15 +13,6 @@ namespace AdventOfCode2020
 
         public class Tile
         {
-            private string TopEdge { get; }
-            private string TopEdgeRev { get; }
-            private string BottomEdge { get; }
-            private string BottomEdgeRev { get; }
-            private string LeftEdge { get; }
-            private string LeftEdgeRev { get; }
-            private string RightEdge { get; }
-            private string RightEdgeRev { get; }
-
             public enum Side
             {
                 Top,
@@ -28,24 +20,32 @@ namespace AdventOfCode2020
                 Bottom,
                 Left
             }
-            public Dictionary<Side,Tile> Connected { get; } = new Dictionary<Side,Tile>();
+            public Dictionary<Side, Tile> Connected { get; } = new Dictionary<Side,Tile>();
+            public Dictionary<Side, (string,string)> Matchers { get; } = new Dictionary<Side, (string,string)>();
             public Tile(IEnumerable<string> input)
             {
                 int Int(string s) => int.Parse(Regex.Match(s, "\\d+").Value);
                 Id = Int(input.First());
                 Pattern = input.Skip(1).ToArray();
-                TopEdge = Pattern[0];
-                TopEdgeRev = new string(Pattern[0].Reverse().ToArray());
-                BottomEdge = Pattern[Pattern.Length - 1];
-                BottomEdgeRev = new string(Pattern[Pattern.Length - 1].Reverse().ToArray());
-                LeftEdge = new string(Pattern.Select(s => s[0]).ToArray());
-                LeftEdgeRev = new string(LeftEdge.Reverse().ToArray());
-                RightEdge = new string(Pattern.Select(s => s.Last()).ToArray());
-                RightEdgeRev = new string(RightEdge.Reverse().ToArray());
+                Matchers[Side.Top] = (Pattern[0], new string(Pattern[0].Reverse().ToArray()));
+                Matchers[Side.Bottom] = (Pattern[Pattern.Length - 1],new string(Pattern[Pattern.Length - 1].Reverse().ToArray()));
+                var left = new string(Pattern.Select(s => s[0]).ToArray());
+                Matchers[Side.Left] = (left, new string(left.Reverse().ToArray()));
+                var right = new string(Pattern.Select(s => s.Last()).ToArray());
+                Matchers[Side.Right] = (right, new string(right.Reverse().ToArray()));
             }
             public int Id { get; }
             public string[] Pattern { get; }
            
+            public IEnumerable<(Side,string,bool)> AvailableSides()
+            {
+                foreach (var side in Enum.GetValues(typeof(Side)).Cast<Side>().Where(s => !Connected.ContainsKey(s)))
+                {
+                    var (forward, rev) = Matchers[side];
+                    yield return (side, forward, false);
+                    yield return (side, rev, true);
+                }
+            }
             
 
             public bool IsCorner()
@@ -53,7 +53,7 @@ namespace AdventOfCode2020
                 return (!Connected.ContainsKey(Side.Top) || !Connected.ContainsKey(Side.Bottom)) &&
                     (!Connected.ContainsKey(Side.Left) || !Connected.ContainsKey(Side.Right));
             }
-            public void Connect(Side side, Tile tile)
+            public void Connect(Side side, Tile tile, bool reverse)
             {
                 if (Connected.ContainsKey(side))
                     throw new InvalidOperationException("Already connected");
@@ -62,106 +62,15 @@ namespace AdventOfCode2020
 
             public void Match(Tile other)
             {
-                // Tops match
-                if (TopEdge == other.TopEdge ||
-                    TopEdgeRev == other.TopEdge)
+                foreach(var pair in AvailableSides().Cartesian(other.AvailableSides(), (a,b) => 
+                    new { a,b }))
                 {
-                    Connect(Side.Top, other);
-                    other.Connect(Side.Top, this);
-                }
-                if (TopEdge == other.BottomEdge ||
-                    TopEdgeRev == other.BottomEdge)
-                {
-                    Connect(Side.Top, other);
-                    other.Connect(Side.Bottom, this);
-                }
-                if (TopEdge == other.RightEdge ||
-                    TopEdgeRev == other.RightEdge)
-                {
-                    Connect(Side.Top, other);
-                    other.Connect(Side.Right, this);
-                }
-                if (TopEdge == other.LeftEdge ||
-                    TopEdgeRev == other.LeftEdge)
-                {
-                    Connect(Side.Top, other);
-                    other.Connect(Side.Left, this);
-                }
-
-                if (BottomEdge == other.TopEdge ||
-                    BottomEdgeRev == other.TopEdge)
-                {
-                    Connect(Side.Bottom, other);
-                    other.Connect(Side.Top, this);
-                }
-                if (BottomEdge == other.BottomEdge ||
-                    BottomEdgeRev == other.BottomEdge)
-                {
-                    Connect(Side.Bottom, other);
-                    other.Connect(Side.Bottom, this);
-                }
-                if (BottomEdge == other.RightEdge ||
-                    BottomEdgeRev == other.RightEdge)
-                {
-                    Connect(Side.Bottom, other);
-                    other.Connect(Side.Right, this);
-                }
-                if (BottomEdge == other.LeftEdge ||
-                    BottomEdgeRev == other.LeftEdge)
-                {
-                    Connect(Side.Bottom, other);
-                    other.Connect(Side.Left, this);
-                }
-
-                if (LeftEdge == other.LeftEdge ||
-                    LeftEdgeRev == other.LeftEdge)
-                {
-                    Connect(Side.Left, other);
-                    other.Connect(Side.Left, this);
-                }
-                if (LeftEdge == other.RightEdge ||
-                    LeftEdgeRev == other.RightEdge)
-                {
-                    Connect(Side.Left, other);
-                    other.Connect(Side.Right, this);
-                }
-                if (LeftEdge == other.TopEdge ||
-                    LeftEdgeRev == other.TopEdge)
-                {
-                    Connect(Side.Left, other);
-                    other.Connect(Side.Top, this);
-                }
-                if (LeftEdge == other.BottomEdge ||
-                    LeftEdgeRev == other.BottomEdge)
-                {
-                    Connect(Side.Left, other);
-                    other.Connect(Side.Bottom, this);
-                }
-
-
-                if (RightEdge == other.LeftEdge ||
-                    RightEdgeRev == other.LeftEdge)
-                {
-                    Connect(Side.Right, other);
-                    other.Connect(Side.Left, this);
-                }
-                if (RightEdge == other.RightEdge ||
-                    RightEdgeRev == other.RightEdge)
-                {
-                    Connect(Side.Right, other);
-                    other.Connect(Side.Right, this);
-                }
-                if (RightEdge == other.TopEdge ||
-                    RightEdgeRev == other.TopEdge)
-                {
-                    Connect(Side.Right, other);
-                    other.Connect(Side.Top, this);
-                }
-                if (RightEdge == other.BottomEdge ||
-                    RightEdgeRev == other.BottomEdge)
-                {
-                    Connect(Side.Right, other);
-                    other.Connect(Side.Bottom, this);
+                    if (pair.a.Item2 == pair.b.Item2)
+                    {
+                        Connect(pair.a.Item1, other, pair.a.Item3);
+                        other.Connect(pair.b.Item1, this, pair.b.Item3);
+                        break;
+                    }
                 }
             }
         }
@@ -191,7 +100,6 @@ namespace AdventOfCode2020
                     }
                 }
             }
-
 
             throw new InvalidOperationException("not enough corners found");
         }
