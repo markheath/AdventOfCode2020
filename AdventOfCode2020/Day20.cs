@@ -20,7 +20,7 @@ namespace AdventOfCode2020
                 Bottom,
                 Left
             }
-            public Dictionary<Side, Tile> Connected { get; } = new Dictionary<Side,Tile>();
+            public Dictionary<Side, (Tile,bool)> Connected { get; } = new Dictionary<Side,(Tile,bool)>();
             public Dictionary<Side, (string,string)> Matchers { get; } = new Dictionary<Side, (string,string)>();
             public Tile(IEnumerable<string> input)
             {
@@ -47,7 +47,6 @@ namespace AdventOfCode2020
                 }
             }
             
-
             public bool IsCorner()
             {
                 return (!Connected.ContainsKey(Side.Top) || !Connected.ContainsKey(Side.Bottom)) &&
@@ -57,7 +56,7 @@ namespace AdventOfCode2020
             {
                 if (Connected.ContainsKey(side))
                     throw new InvalidOperationException("Already connected");
-                Connected[side] = tile;
+                Connected[side] = (tile,reverse);
             }
 
             public void Match(Tile other)
