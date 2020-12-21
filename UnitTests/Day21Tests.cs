@@ -13,7 +13,7 @@ trh fvjkl sbzzf mxmxvkd (contains dairy)
 sqjhc fvjkl (contains soy)
 sqjhc mxmxvkd sbzzf (contains fish)".Split("\r\n");
             var answer = new Day21().Solve(testInput);
-            Assert.AreEqual(("5", ""), answer);
+            Assert.AreEqual(("5", "mxmxvkd,sqjhc,fvjkl"), answer);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using static MoreLinq.Extensions.SkipUntilExtension;
+using static MoreLinq.Extensions.ToDelimitedStringExtension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ namespace AdventOfCode2020
 {
     public class Day21 : ISolver
     {
-        public (string, string) ExpectedResult => ("2150", "");
+        public (string, string) ExpectedResult => ("2150", "vpzxk,bkgmcsx,qfzv,tjtgbf,rjdqt,hbnf,jspkl,hdcj");
 
         public class Food
         {
@@ -45,36 +46,33 @@ namespace AdventOfCode2020
                     }
                 }
             }
-            /*
+            
             // solve the allergens
             bool loop;
-            var solvedAllergens = new HashSet<string>();
+            var takenFoods = new HashSet<string>();
+            var answers = new Dictionary<string,string>();
             do
             {
-                loop = true;
+                loop = false;
                 foreach (var kvp in allergenToIngredient)
                 {
                     var allergen = kvp.Key;
                     var ingredients = kvp.Value;
-                    if (ingredients.Count == 1 && !solvedAllergens.Contains(allergen))
+                    var diff = new HashSet<string>(ingredients);
+                    diff.ExceptWith(takenFoods);
+                    if (diff.Count == 1)
                     {
-                        solvedAllergens.Add(allergen);
-                        foreach(var v in allergenToIngredient.Where(kvp => kvp.Key != allergen))
+                        var f = diff.Single();
+                        takenFoods.Add(f);
+                        answers[allergen] = f;
+                        /*foreach(var v in allergenToIngredient.Where(kvp => kvp.Key != allergen))
                         {
-                            if (ingredients != v.Value)
-                                v.Value.Remove(ingredients.Single());
-                        }
-                    }
-                    else if (ingredients.Count > 1)
-                    {
+                            v.Value.Remove(ingredients.Single());
+                        }*/
                         loop = true;
                     }
-                    else
-                    {
-                        //throw new InvalidOperationException("oops");
-                    }
                 }
-            } while (loop);*/
+            } while (loop);
              
             var allergenFreeIngredients = allIngredients.Except(allergenToIngredient.SelectMany(kvp => kvp.Value)).ToHashSet();
 
@@ -83,9 +81,10 @@ namespace AdventOfCode2020
             
             var part1 = food.Sum(f => f.Ingredients.Intersect(allergenFreeIngredients).Count());
             //ingredientToAllergen.Where(kvp => kvp.Value.Count == 0).Select(kvp => kvp.Key).ToList();
+            var part2 = answers 
+                .OrderBy(s => s.Key).Select(s => s.Value).ToDelimitedString(",");
 
-
-            return (part1.ToString(),"");
+            return (part1.ToString(),part2);
         }
     }
 }
