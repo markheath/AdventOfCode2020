@@ -8,9 +8,12 @@ namespace UnitTests
         [Test]
         public void SolveWithTestInput()
         {
-            var testInput = @"".Split("\r\n");
+            var testInput = @"mxmxvkd kfcds sqjhc nhms (contains dairy, fish)
+trh fvjkl sbzzf mxmxvkd (contains dairy)
+sqjhc fvjkl (contains soy)
+sqjhc mxmxvkd sbzzf (contains fish)".Split("\r\n");
             var answer = new Day21().Solve(testInput);
-            Assert.AreEqual(("a", "b"), answer);
+            Assert.AreEqual(("5", ""), answer);
         }
     }
 }
