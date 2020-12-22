@@ -13,6 +13,10 @@ namespace AdventOfCode2020
             return ($"{Solve(input, 2)}", $"{Solve(input, 3)}");
         }
 
-        long Solve(IEnumerable<string> input, int count) => input.Select(long.Parse).Subsets(count).First(n => n.Sum() == 2020).Aggregate((x, y) => x * y);
+        long Solve(IEnumerable<string> input, int count) => 
+            input.Select(long.Parse)
+                 .Subsets(count)
+                 .First(n => n.Sum() == 2020)
+                 .Aggregate((x, y) => x * y);
     }
 }
