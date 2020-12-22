@@ -127,7 +127,7 @@ namespace AdventOfCode2020
 
             public Tile(string[] lines)
             {
-                ID = int.Parse(lines[0].Substring(5).TrimEnd(':'));
+                ID = int.Parse(lines[0][5..].TrimEnd(':'));
                 var d = lines.Skip(1).ToArray();
                 Data = new char[d.Length, d[0].Length];
                 for (var r = 0; r < d.Length; r++)

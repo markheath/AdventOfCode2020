@@ -109,8 +109,8 @@ namespace AdventOfCode2020
             public Rule(string rule)
             {
                 var idx = rule.IndexOf(':');
-                Name = rule.Substring(0, idx);
-                var parts = rule.Substring(idx+2).Split(" or ");
+                Name = rule[0..idx];
+                var parts = rule[(idx + 2)..].Split(" or ");
                 range1 = (int.Parse(parts[0].Split('-')[0]), int.Parse(parts[0].Split('-')[1]));
                 range2 = (int.Parse(parts[1].Split('-')[0]), int.Parse(parts[1].Split('-')[1]));
                 this.rule = rule;

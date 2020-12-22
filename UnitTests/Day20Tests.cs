@@ -1,7 +1,5 @@
 ﻿using AdventOfCode2020;
 using NUnit.Framework;
-using MoreLinq;
-using System.Linq;
 
 namespace UnitTests
 {
@@ -117,9 +115,8 @@ Tile 3079:
 ..#.###...
 ..#.......
 ..#.###...".Split("\r\n");
-            //var tiles = testInput.Split("").Select(t => new Day20.Tile(t)).ToArray();
             var answer = new Day20().Solve(testInput);
-            Assert.AreEqual(20899048083289L, answer.Item1);
+            Assert.AreEqual("20899048083289", answer.Item1);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace AdventOfCode2020
 				var from = s[0];
 				var to = s[2];
 				var letter = s[4];
-				var password = s.Substring(7); */
+				var password = s[7..]; */
 
 				/* splitting technique 2 - better, but assumes special characters can't be in the values
 				s.Split(new[] { " ", "-", ":" }, StringSplitOptions.RemoveEmptyEntries) */

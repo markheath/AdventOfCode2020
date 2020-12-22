@@ -8,7 +8,7 @@ using System.Linq;
 namespace AdventOfCode2020
 {
     /// <summary>
-    /// basic on answer from here https://www.reddit.com/r/adventofcode/comments/kg1mro/2020_day_19_solutions/ggc2dcx/?utm_source=reddit&utm_medium=web2x&context=3
+    /// based on answer from here https://www.reddit.com/r/adventofcode/comments/kg1mro/2020_day_19_solutions/ggc2dcx/?utm_source=reddit&utm_medium=web2x&context=3
     /// </summary>
     public class Day19V2
     {
@@ -59,7 +59,7 @@ namespace AdventOfCode2020
             var ret = false;
             if (C.ContainsKey(rule))
             {
-                ret = line.Substring(st, ed - st) == C[rule]; // python substring =  [st: ed] 
+                ret = line[st..ed] == C[rule]; 
             }
             else
             {
@@ -84,16 +84,16 @@ namespace AdventOfCode2020
                 if (line.Contains(':'))
                 {
                     var words = line.Split();
-                    var name = words[0].Substring(0, words[0].Length - 1);
+                    var name = words[0][..^1];
                     string rest;
                     if (name == "8" && part2)
                         rest = "42 | 42 8";
                     else if (name == "11" && part2)
                         rest = "42 31 | 42 11 31";
                     else
-                        rest = words.Skip(1).ToDelimitedString(" "); //  ' '.join(words[1:])
+                        rest = words.Skip(1).ToDelimitedString(" ");
                     if (rest.Contains('"'))
-                        C[name] = rest.Substring(1, 1); // [1:-1]
+                        C[name] = rest[1..^1];
                     else
                     {
                         var options = rest.Split(" | ");
@@ -165,7 +165,7 @@ namespace AdventOfCode2020
                 var rule = Rules[startingRule];
                 if (rule.Match != null)
                 {
-                    if (message.Substring(startPos).StartsWith(rule.Match))
+                    if (message[startPos..].StartsWith(rule.Match))
                         return (true, startPos + rule.Match.Length);
                     return (false,startPos);
                 }
@@ -206,14 +206,14 @@ namespace AdventOfCode2020
             public Rule(string rule)
             {
                 var bits = rule.Split(' ');
-                Id = int.Parse(bits[0].Substring(0, bits[0].Length - 1));
+                Id = int.Parse(bits[0][0..^1]);
                 Sequences = new List<List<int>>();
                 List<int> currentSequence = null;
                 for (var n = 1; n < bits.Length; n++)
                 {
                     if (bits[n].StartsWith('"'))
                     {
-                        Match = bits[n].Substring(1, 1); // always 1 char
+                        Match = bits[n][1..2]; // always 1 char
                     }
                     else if (bits[n] == "|")
                     {

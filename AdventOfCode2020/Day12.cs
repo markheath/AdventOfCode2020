@@ -19,7 +19,7 @@ namespace AdventOfCode2020
         public static (int,int,int) Move((int,int,int) currentState, string instruction)
         {
             var (x, y, dir) = currentState;
-            var amount = int.Parse(instruction.Substring(1));
+            var amount = int.Parse(instruction[1..]);
             var action = instruction[0];
             if (action == 'F')
             {
@@ -88,7 +88,7 @@ namespace AdventOfCode2020
         public static ((int, int), (int, int)) Move2(((int, int), (int,int)) currentState, string instruction)
         {
             var ((x, y), (wx, wy)) = currentState;
-            var amount = int.Parse(instruction.Substring(1));
+            var amount = int.Parse(instruction[1..]);
             var action = instruction[0];
             switch (action)
             {

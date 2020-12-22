@@ -78,8 +78,8 @@ namespace AdventOfCode2020
             {
                 var part = parts[n];
                 if (part == "no other") break;
-                var count = int.Parse(part.Substring(0, 1));
-                var col = part.Substring(2).Trim();
+                var count = int.Parse(part[..1]);
+                var col = part[2..].Trim();
                 bag.Contents.Add(new BagContents() { Color = col, Count = count });
             }
             return bag;

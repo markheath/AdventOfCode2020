@@ -44,7 +44,7 @@ namespace AdventOfCode2020
 			if (!Regex.IsMatch(passportId, "^[0-9]{9}$")) return false;
 			if (height.EndsWith("cm"))
 			{
-				if (int.TryParse(height.Substring(0, height.Length - 2), out var cm))
+				if (int.TryParse(height[0..^2], out var cm))
 				{
 					if (cm < 150 || cm > 193) return false;
 				}
@@ -55,7 +55,7 @@ namespace AdventOfCode2020
 			}
 			else if (height.EndsWith("in"))
 			{
-				if (int.TryParse(height.Substring(0, height.Length - 2), out var inches))
+				if (int.TryParse(height[0..^2], out var inches))
 				{
 					if (inches < 59 || inches > 76) return false;
 				}

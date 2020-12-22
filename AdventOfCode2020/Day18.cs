@@ -94,7 +94,7 @@ namespace AdventOfCode2020
                     count--;
                     if (count == 0)
                     {
-                        var subEquation = s.Substring(startPos + 1, k - startPos - 1);
+                        var subEquation = s[(startPos + 1)..k]; // .Substring(startPos + 1, k - startPos - 1);
                         return subEquation;
                     }
                 }

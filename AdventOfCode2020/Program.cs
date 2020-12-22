@@ -11,7 +11,7 @@ namespace AdventOfCode2020
         static void Main(string[] args)
         {            
             var (solver,input) = Utils.FindAllSolvers().First();
-            Console.WriteLine($"Solving for day {solver.GetType().Name.Substring(3)}");
+            Console.WriteLine($"Solving for day {solver.GetType().Name[3..]}");
             var sw = Stopwatch.StartNew();
             var (a,b) = solver.Solve(input);
             sw.Stop();
