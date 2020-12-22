@@ -8,9 +8,21 @@ namespace UnitTests
         [Test]
         public void SolveWithTestInput()
         {
-            var testInput = @"".Split("\r\n");
+            var testInput = @"Player 1:
+9
+2
+6
+3
+1
+
+Player 2:
+5
+8
+4
+7
+10".Split("\r\n");
             var answer = new Day22().Solve(testInput);
-            Assert.AreEqual(("a", "b"), answer);
+            Assert.AreEqual(("306", ""), answer);
         }
     }
 }
