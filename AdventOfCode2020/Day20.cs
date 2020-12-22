@@ -7,9 +7,9 @@ using System.Collections.Generic;
 
 namespace AdventOfCode2020
 {
-    public class Day20 : ISolver
+    public class Day20Fail : ISolver
     {
-        public (string, string) ExpectedResult => ("79412832860579", "");
+        public (string, string) ExpectedResult => ("79412832860579", "2155");
 
         public class Tile
         {

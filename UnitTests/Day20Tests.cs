@@ -117,9 +117,9 @@ Tile 3079:
 ..#.###...
 ..#.......
 ..#.###...".Split("\r\n");
-            var tiles = testInput.Split("").Select(t => new Day20.Tile(t)).ToArray();
-            var answer = Day20.SolvePart1(tiles);
-            Assert.AreEqual(20899048083289L, answer);
+            //var tiles = testInput.Split("").Select(t => new Day20.Tile(t)).ToArray();
+            var answer = new Day20().Solve(testInput);
+            Assert.AreEqual(20899048083289L, answer.Item1);
         }
     }
 }
