@@ -8,10 +8,12 @@ namespace AdventOfCode2020
 {
     public class Day23 : ISolver
     {
-        public (string, string) ExpectedResult => ("98742365", "");
+        public (string, string) ExpectedResult => ("98742365", "294320513093");
 
         public class Cup
         {
+            private static Dictionary<int, Cup> lookup = new Dictionary<int, Cup>();
+
             public static Cup Parse(string input)
             {
                 return Parse(input.Select(c => c - '0'));
@@ -26,12 +28,14 @@ namespace AdventOfCode2020
             {
                 Cup firstCup = null;
                 Cup currentCup = null;
+                lookup.Clear();
                 foreach (var id in ids)
                 {
                     var cup = new Cup() { Id = id, Previous = currentCup };
                     if (firstCup == null) firstCup = cup;
                     if (currentCup != null) currentCup.Next = cup;
                     currentCup = cup;
+                    lookup[id] = cup;
                 }
                 // complete the circle
                 currentCup.Next = firstCup;
@@ -66,24 +70,29 @@ namespace AdventOfCode2020
                 return cup;
             }
 
+            public Cup Find(int cupId)
+            {
+                return lookup[cupId];
+            }
+
             public Cup MoveOne(int maxId)
             {
                 // remove the three next cups
                 var firstToRemove = this.Next;
                 var lastToRemove = firstToRemove.Next.Next;
                 var firstToKeep = lastToRemove.Next;
-                var removeIds = new HashSet<int>() { firstToRemove.Id, firstToRemove.Next.Id, lastToRemove.Id };
+                var exclude = new HashSet<int>() { firstToRemove.Id, firstToRemove.Next.Id, firstToRemove.Next.Next.Id };
                 this.Next = firstToKeep;
                 firstToKeep.Previous = this;
 
                 // work out the destination cup
                 var destCupId = Id == 1 ? maxId : Id - 1;
-                while (removeIds.Contains(destCupId))
+                while (exclude.Contains(destCupId))
                 {
                     destCupId--;
                     if (destCupId == 0) destCupId = maxId;
                 }
-                var destCup = this.Next.Find(destCupId);
+                var destCup = lookup[destCupId];
                 
                 // insert the picked up cups
                 destCup.Next.Previous = lastToRemove;
@@ -94,19 +103,7 @@ namespace AdventOfCode2020
                 return Next;
             }
 
-            public Cup Find(int id)
-            {
-                var testCup = this;
-                do
-                {
-                    if (testCup.Id == id)
-                    {
-                        return testCup;
-                    }
-                    testCup = testCup.Next;
-                } while (testCup != this);
-                return null;
-            }
+
         } 
 
         
@@ -130,7 +127,8 @@ namespace AdventOfCode2020
         public (string, string) Solve(string[] input)
         {
             var p1 = Part1(input[0]);
-            return (p1, "");
+            var p2 = Part2(input[0]);
+            return (p1, p2);
         }
     }
 }

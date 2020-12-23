@@ -20,7 +20,7 @@ namespace AdventOfCode2020
 
             if (solver.ExpectedResult != (a,b))
             {
-                Console.WriteLine($"Error! Expected: {solver.ExpectedResult}");
+                Console.WriteLine($"Error after {sw.ElapsedMilliseconds}ms! Expected: {solver.ExpectedResult}");
             }
             else
             {
