@@ -31,7 +31,7 @@ namespace AdventOfCode2020
                 lookup.Clear();
                 foreach (var id in ids)
                 {
-                    var cup = new Cup() { Id = id, Previous = currentCup };
+                    var cup = new Cup() { Id = id };
                     if (firstCup == null) firstCup = cup;
                     if (currentCup != null) currentCup.Next = cup;
                     currentCup = cup;
@@ -39,12 +39,10 @@ namespace AdventOfCode2020
                 }
                 // complete the circle
                 currentCup.Next = firstCup;
-                firstCup.Previous = currentCup;
                 return firstCup;
             }
 
             public int Id { get; set; }
-            public Cup Previous { get; set; }
             public Cup Next { get; set; }
 
             public override string ToString()
@@ -61,11 +59,9 @@ namespace AdventOfCode2020
             public Cup Move(int moves, int maxId)
             {
                 var cup = this;
-                var sw = Stopwatch.StartNew();
                 for (var n = 0; n < moves; n++)
                 {
                     cup = cup.MoveOne(maxId);
-                    if (n % 50_000 == 0) Console.WriteLine($"{sw.Elapsed} {n}");
                 }
                 return cup;
             }
@@ -83,8 +79,7 @@ namespace AdventOfCode2020
                 var firstToKeep = lastToRemove.Next;
                 var exclude = new HashSet<int>() { firstToRemove.Id, firstToRemove.Next.Id, firstToRemove.Next.Next.Id };
                 this.Next = firstToKeep;
-                firstToKeep.Previous = this;
-
+                
                 // work out the destination cup
                 var destCupId = Id == 1 ? maxId : Id - 1;
                 while (exclude.Contains(destCupId))
@@ -95,11 +90,9 @@ namespace AdventOfCode2020
                 var destCup = lookup[destCupId];
                 
                 // insert the picked up cups
-                destCup.Next.Previous = lastToRemove;
                 lastToRemove.Next = destCup.Next;
                 destCup.Next = firstToRemove;
-                firstToRemove.Previous = destCup;
-
+                
                 return Next;
             }
 
