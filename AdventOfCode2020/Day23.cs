@@ -77,12 +77,15 @@ namespace AdventOfCode2020
                 var firstToRemove = this.Next;
                 var lastToRemove = firstToRemove.Next.Next;
                 var firstToKeep = lastToRemove.Next;
-                var exclude = new HashSet<int>() { firstToRemove.Id, firstToRemove.Next.Id, firstToRemove.Next.Next.Id };
+                var id1 = firstToRemove.Id;
+                var id2 = firstToRemove.Next.Id;
+                var id3 = lastToRemove.Id;
+
                 this.Next = firstToKeep;
                 
                 // work out the destination cup
                 var destCupId = Id == 1 ? maxId : Id - 1;
-                while (exclude.Contains(destCupId))
+                while (destCupId == id1 || destCupId == id2 || destCupId == id3)
                 {
                     destCupId--;
                     if (destCupId == 0) destCupId = maxId;
