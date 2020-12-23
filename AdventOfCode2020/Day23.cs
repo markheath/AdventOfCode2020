@@ -67,17 +67,7 @@ namespace AdventOfCode2020
                 {
                     destCupId--;
                     if (destCupId == 0) destCupId = 9;
-
-                    var testCup = this.Next;
-                    while (testCup != this)
-                    {
-                        if (testCup.Id == destCupId)
-                        {
-                            destCup = testCup;
-                            break;
-                        }
-                        testCup = testCup.Next;
-                    }
+                    destCup = this.Next.Find(destCupId);
                 }
 
                 // insert the picked up cups
