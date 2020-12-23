@@ -25,7 +25,7 @@ namespace AdventOfCode2020
         {
             var solvers = typeof(Day1).Assembly.GetTypes()
                 .Where(t => t.IsClass && typeof(ISolver).IsAssignableFrom(t))
-                .OrderByDescending(t => Regex.Match(t.Name, "\\d+").Value);
+                .OrderByDescending(t => int.Parse(Regex.Match(t.Name, "\\d+").Value));
             foreach (var solver in solvers)
             {
                 var path = FindPath($"Input\\{solver.Name}.txt");
