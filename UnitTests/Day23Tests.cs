@@ -31,7 +31,7 @@ namespace UnitTests
         public void CanDo10Moves()
         {
             var c = Day23.Cup.Parse("389125467");
-            c = c.Move(10,9);
+            c = c.Move(10);
             Assert.AreEqual(8, c.Id);
             Assert.AreEqual("837419265", c.ToString());
         }

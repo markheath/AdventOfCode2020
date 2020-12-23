@@ -56,9 +56,10 @@ namespace AdventOfCode2020
                 } while (testCup != this);
                 return sb.ToString();
             }
-            public Cup Move(int moves, int maxId)
+            public Cup Move(int moves)
             {
                 var cup = this;
+                var maxId = lookup.Count;
                 for (var n = 0; n < moves; n++)
                 {
                     cup = cup.MoveOne(maxId);
@@ -107,14 +108,14 @@ namespace AdventOfCode2020
         public static string Part1(string input)
         {
             var c = Cup.Parse(input);
-            c = c.Move(100, 9);
+            c = c.Move(100);
             return c.Find(1).ToString()[1..];
         }
 
         public static string Part2(string input)
         {
             var c = Cup.Parse2(input);
-            c = c.Move(10_000_000, 1_000_000);
+            c = c.Move(10_000_000);
             var cup1 = c.Find(1);
             var answer  = (long)cup1.Next.Id * (long)cup1.Next.Next.Id;
             return answer.ToString();
