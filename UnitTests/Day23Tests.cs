@@ -8,16 +8,11 @@ namespace UnitTests
         [Test]
         public void CanParseCups()
         {
-            //var testInput = @"".Split("\r\n");
-            //var answer = new Day23().Solve(testInput);
-            //Assert.AreEqual(("a", "b"), answer);
             var c = Day23.Cup.Parse("389125467");
             Assert.AreEqual(3, c.Id);
             Assert.AreEqual(8, c.Next.Id);
             Assert.AreEqual(9, c.Next.Next.Id);
-            Assert.AreEqual(7, c.Previous.Id);
-            Assert.AreEqual(6, c.Previous.Previous.Id);
-
+            Assert.AreEqual("389125467", c.ToString());
         }
 
         [Test]
