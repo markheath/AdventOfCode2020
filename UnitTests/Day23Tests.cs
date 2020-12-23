@@ -27,7 +27,7 @@ namespace UnitTests
             //var answer = new Day23().Solve(testInput);
             //Assert.AreEqual(("a", "b"), answer);
             var c = Day23.Cup.Parse("389125467");
-            c = c.Move();
+            c = c.MoveOne(9);
             Assert.AreEqual(2, c.Id);
             Assert.AreEqual("289154673", c.ToString());
         }
@@ -36,7 +36,7 @@ namespace UnitTests
         public void CanDo10Moves()
         {
             var c = Day23.Cup.Parse("389125467");
-            c = c.Move(10);
+            c = c.Move(10,9);
             Assert.AreEqual(8, c.Id);
             Assert.AreEqual("837419265", c.ToString());
         }
@@ -47,7 +47,12 @@ namespace UnitTests
             var answer = Day23.Part1("389125467");
             Assert.AreEqual("67384529", answer);
         }
-
+        [Test]
+        public void SolvePart2Slow()
+        {
+            var answer = Day23.Part2("389125467");
+            Assert.AreEqual("149245887792", answer);
+        }
 
     }
 }
