@@ -54,10 +54,8 @@ namespace AdventOfCode2020
             do
             {
                 loop = false;
-                foreach (var kvp in allergenToIngredient)
+                foreach (var (allergen, ingredients) in allergenToIngredient)
                 {
-                    var allergen = kvp.Key;
-                    var ingredients = kvp.Value;
                     var diff = new HashSet<string>(ingredients);
                     diff.ExceptWith(takenFoods);
                     if (diff.Count == 1)
@@ -65,10 +63,6 @@ namespace AdventOfCode2020
                         var f = diff.Single();
                         takenFoods.Add(f);
                         answers[allergen] = f;
-                        /*foreach(var v in allergenToIngredient.Where(kvp => kvp.Key != allergen))
-                        {
-                            v.Value.Remove(ingredients.Single());
-                        }*/
                         loop = true;
                     }
                 }

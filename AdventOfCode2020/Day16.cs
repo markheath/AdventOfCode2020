@@ -57,9 +57,9 @@ namespace AdventOfCode2020
                 positionRules.Add(solved.Key, solvedRule);
                 possibleRules.Remove(solved.Key);
                 // exclude this rule from all unsolved position
-                foreach (var pr in possibleRules)
+                foreach (var (_,pr) in possibleRules)
                 {
-                    pr.Value.Remove(solvedRule);
+                    pr.Remove(solvedRule);
                 }
             }
 
