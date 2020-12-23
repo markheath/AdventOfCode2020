@@ -8,11 +8,8 @@ namespace UnitTests
         [Test]
         public void CanParseCups()
         {
-            var c = Day23.Cup.Parse("389125467");
-            Assert.AreEqual(3, c.Id);
-            Assert.AreEqual(8, c.Next.Id);
-            Assert.AreEqual(9, c.Next.Next.Id);
-            Assert.AreEqual("389125467", c.ToString());
+            var c = Day23.Parse("389125467");
+            Assert.AreEqual("389125467", Day23.Describe(c));
         }
 
         [Test]
@@ -21,19 +18,19 @@ namespace UnitTests
             //var testInput = @"".Split("\r\n");
             //var answer = new Day23().Solve(testInput);
             //Assert.AreEqual(("a", "b"), answer);
-            var c = Day23.Cup.Parse("389125467");
-            c = c.MoveOne(9);
-            Assert.AreEqual(2, c.Id);
-            Assert.AreEqual("289154673", c.ToString());
+            var c = Day23.Parse("389125467");
+            c = Day23.MoveOne(c, 9);
+            Assert.AreEqual(2, c);
+            Assert.AreEqual("289154673", Day23.Describe(c));
         }
 
         [Test]
         public void CanDo10Moves()
         {
-            var c = Day23.Cup.Parse("389125467");
-            c = c.Move(10);
-            Assert.AreEqual(8, c.Id);
-            Assert.AreEqual("837419265", c.ToString());
+            var c = Day23.Parse("389125467");
+            c = Day23.Move(c, 10);
+            Assert.AreEqual(8, c);
+            Assert.AreEqual("837419265", Day23.Describe(c));
         }
 
         [Test]

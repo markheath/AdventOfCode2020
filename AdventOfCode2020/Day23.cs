@@ -10,114 +10,90 @@ namespace AdventOfCode2020
     {
         public (string, string) ExpectedResult => ("98742365", "294320513093");
 
-        public class Cup
+        private static int[] lookup = null;
+
+        public static int Parse(string input, int length =0)
         {
-            private static Dictionary<int, Cup> lookup = new Dictionary<int, Cup>();
+            if (length == 0) length = input.Length;
+            return Parse(input.Select(c => c - '0').Concat(Enumerable.Range(input.Length + 1, length - input.Length)), length);
+        }
 
-            public static Cup Parse(string input)
+        public static int Parse(IEnumerable<int> ids, int length)
+        {
+            int firstCup = -1;
+            int currentCup = -1;
+            lookup = new int[length+1];
+            foreach (var cup in ids)
             {
-                return Parse(input.Select(c => c - '0'));
+                if (firstCup == -1) firstCup = cup;
+                if (currentCup != -1) lookup[currentCup] = cup;
+                currentCup = cup;
             }
-
-            public static Cup Parse2(string input)
+            // complete the circle
+            lookup[currentCup] = firstCup;
+            return firstCup;
+        }
+        public static int Move(int cup, int moves)
+        {
+            var maxId = lookup.Length - 1;
+            for (var n = 0; n < moves; n++)
             {
-                return Parse(input.Select(c => c - '0').Concat(Enumerable.Range(input.Length+1, 1_000_000-input.Length)));
+                cup = MoveOne(cup, maxId);
             }
+            return cup;
+        }
 
-            public static Cup Parse(IEnumerable<int> ids)
+        public static int MoveOne(int cup, int maxId)
+        {
+            // remove the three next cups
+            var rem1 = lookup[cup];
+            var rem2 = lookup[rem1];
+            var rem3 = lookup[rem2];
+            var keep = lookup[rem3];
+
+            lookup[cup] = keep;
+
+            // work out the destination cup
+            var destCupId = cup == 1 ? maxId : cup - 1;
+            while (destCupId == rem1 || destCupId == rem2 || destCupId == rem3)
             {
-                Cup firstCup = null;
-                Cup currentCup = null;
-                lookup.Clear();
-                foreach (var id in ids)
-                {
-                    var cup = new Cup() { Id = id };
-                    if (firstCup == null) firstCup = cup;
-                    if (currentCup != null) currentCup.Next = cup;
-                    currentCup = cup;
-                    lookup[id] = cup;
-                }
-                // complete the circle
-                currentCup.Next = firstCup;
-                return firstCup;
+                destCupId--;
+                if (destCupId == 0) destCupId = maxId;
             }
+            
+            // insert the picked up cups
+            lookup[rem3] = lookup[destCupId];
+            lookup[destCupId] = rem1;
 
-            public int Id { get; set; }
-            public Cup Next { get; set; }
+            return keep;
+        }
 
-            public override string ToString()
+
+        public static string Describe(int cup)
+        {
+            var sb = new StringBuilder();
+            var c = cup;
+            do
             {
-                var sb = new StringBuilder();
-                var testCup = this;
-                do
-                {
-                    sb.Append(testCup.Id);
-                    testCup = testCup.Next;
-                } while (testCup != this);
-                return sb.ToString();
-            }
-            public Cup Move(int moves)
-            {
-                var cup = this;
-                var maxId = lookup.Count;
-                for (var n = 0; n < moves; n++)
-                {
-                    cup = cup.MoveOne(maxId);
-                }
-                return cup;
-            }
+                sb.Append(c);
+                c = lookup[c];
+            } while (c != cup);
+            return sb.ToString();
+        }
 
-            public Cup Find(int cupId)
-            {
-                return lookup[cupId];
-            }
-
-            public Cup MoveOne(int maxId)
-            {
-                // remove the three next cups
-                var firstToRemove = this.Next;
-                var lastToRemove = firstToRemove.Next.Next;
-                var firstToKeep = lastToRemove.Next;
-                var id1 = firstToRemove.Id;
-                var id2 = firstToRemove.Next.Id;
-                var id3 = lastToRemove.Id;
-
-                this.Next = firstToKeep;
-                
-                // work out the destination cup
-                var destCupId = Id == 1 ? maxId : Id - 1;
-                while (destCupId == id1 || destCupId == id2 || destCupId == id3)
-                {
-                    destCupId--;
-                    if (destCupId == 0) destCupId = maxId;
-                }
-                var destCup = lookup[destCupId];
-                
-                // insert the picked up cups
-                lastToRemove.Next = destCup.Next;
-                destCup.Next = firstToRemove;
-                
-                return Next;
-            }
-
-
-        } 
-
-        
 
         public static string Part1(string input)
         {
-            var c = Cup.Parse(input);
-            c = c.Move(100);
-            return c.Find(1).ToString()[1..];
+            var c = Parse(input, input.Length);
+            c = Move(c, 100);
+            return Describe(1)[1..];
         }
 
         public static string Part2(string input)
         {
-            var c = Cup.Parse2(input);
-            c = c.Move(10_000_000);
-            var cup1 = c.Find(1);
-            var answer  = (long)cup1.Next.Id * (long)cup1.Next.Next.Id;
+            var c = Parse(input, 1_000_000);
+            c = Move(c, 10_000_000);
+            var answer  = (long)lookup[1] * lookup[lookup[1]];
             return answer.ToString();
         }
 
