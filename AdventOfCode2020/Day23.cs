@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -10,19 +9,21 @@ namespace AdventOfCode2020
     {
         public (string, string) ExpectedResult => ("98742365", "294320513093");
 
-        private static int[] lookup = null;
+        private int[] lookup = null;
+        private int maxId;
 
-        public static int Parse(string input, int length =0)
+        public int Parse(string input, int length =0)
         {
             if (length == 0) length = input.Length;
             return Parse(input.Select(c => c - '0').Concat(Enumerable.Range(input.Length + 1, length - input.Length)), length);
         }
 
-        public static int Parse(IEnumerable<int> ids, int length)
+        public int Parse(IEnumerable<int> ids, int length)
         {
             int firstCup = -1;
             int currentCup = -1;
             lookup = new int[length+1];
+            maxId = length;
             foreach (var cup in ids)
             {
                 if (firstCup == -1) firstCup = cup;
@@ -33,17 +34,16 @@ namespace AdventOfCode2020
             lookup[currentCup] = firstCup;
             return firstCup;
         }
-        public static int Move(int cup, int moves)
+        public int Move(int cup, int moves)
         {
-            var maxId = lookup.Length - 1;
             for (var n = 0; n < moves; n++)
             {
-                cup = MoveOne(cup, maxId);
+                cup = MoveOne(cup);
             }
             return cup;
         }
 
-        public static int MoveOne(int cup, int maxId)
+        public int MoveOne(int cup)
         {
             // remove the three next cups
             var rem1 = lookup[cup];
@@ -69,7 +69,7 @@ namespace AdventOfCode2020
         }
 
 
-        public static string Describe(int cup)
+        public string Describe(int cup)
         {
             var sb = new StringBuilder();
             var c = cup;
@@ -82,14 +82,14 @@ namespace AdventOfCode2020
         }
 
 
-        public static string Part1(string input)
+        public string Part1(string input)
         {
-            var c = Parse(input, input.Length);
+            var c = Parse(input);
             c = Move(c, 100);
             return Describe(1)[1..];
         }
 
-        public static string Part2(string input)
+        public string Part2(string input)
         {
             var c = Parse(input, 1_000_000);
             c = Move(c, 10_000_000);
