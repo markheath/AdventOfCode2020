@@ -22,7 +22,7 @@ Player 2:
 7
 10".Split("\r\n");
             var answer = new Day22().Solve(testInput);
-            Assert.AreEqual(("306", ""), answer);
+            Assert.AreEqual(("306", "291"), answer);
         }
     }
 }
