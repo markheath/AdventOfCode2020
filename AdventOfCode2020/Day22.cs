@@ -40,8 +40,9 @@ namespace AdventOfCode2020
             public long Score { get => buffer.Reverse().Select((c, index) => (long)c * (index + 1)).Sum(); }
             public int Player { get; }
            
-            public Hand Copy(int cards)
+            public Hand Copy(int cards = -1)
             {
+                if (cards == -1) cards = Count;
                 return new Hand(Player, buffer.Take(cards));
             }
         }
@@ -85,9 +86,14 @@ namespace AdventOfCode2020
 
         public (string, string) Solve(string[] input)
         {
-            Hand p1, p2;
-            ParseHands(input, out p1, out p2);
-            var round = 0;
+            ParseHands(input, out Hand p1, out Hand p2);
+            var part1 = Combat(p1.Copy(), p2.Copy()).Score;
+            var part2 = RecursiveCombat(p1, p2).Score;
+            return (part1.ToString(), part2.ToString());
+        }
+
+        private static Hand Combat(Hand p1, Hand p2)
+        {
             do
             {
                 var c1 = p1.Dequeue();
@@ -100,15 +106,10 @@ namespace AdventOfCode2020
                 {
                     p2.Enqueue(c2, c1);
                 }
-                round++;
             } while (p1.Count > 0 && p2.Count > 0);
 
             var winner = p1.Count == 0 ? p2 : p1;
-            var part1 = winner.Score;
-
-            ParseHands(input, out p1, out p2);
-            var part2 = RecursiveCombat(p1, p2).Score;
-            return (part1.ToString(), part2.ToString());
+            return winner;
         }
 
         private static void ParseHands(string[] input, out Hand p1, out Hand p2)
