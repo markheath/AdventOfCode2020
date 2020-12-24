@@ -1,9 +1,23 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace AdventOfCode2020
 {
+
+    // https://github.com/dotnet/roslyn/blob/master/src/Compilers/Test/Resources/Core/NetFX/ValueTuple/ValueTuple.cs
+    internal static class HashHelpers
+    {
+        public static readonly int RandomSeed = new Random().Next(int.MinValue, int.MaxValue);
+
+        public static int Combine(int h1, int h2)
+        {
+            // RyuJIT optimizes this to use the ROL instruction
+            // Related GitHub pull request: dotnet/coreclr#1830
+            uint rol5 = ((uint)h1 << 5) | ((uint)h1 >> 27);
+            return ((int)rol5 + h1) ^ h2;
+        }
+    }
     public struct Coord : IEnumerable<int>
     {
         private readonly int x;
@@ -53,11 +67,26 @@ namespace AdventOfCode2020
 
         public override bool Equals(object other) =>
             other is Coord c
-                && c.x == x
-                && c.y == y
-                && c.z == z;
+                && c.x.Equals(x)
+                && c.y.Equals(y)
+                && c.z.Equals(z);
 
-        public override int GetHashCode() => x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode();
+        public override int GetHashCode()
+            => HashHelpers.Combine(HashHelpers.Combine(HashHelpers.Combine(HashHelpers.RandomSeed, x), y), z);
+        /*
+        {
+            unchecked // Overflow is fine, just wrap
+            {
+                int hash = 17;
+                // Suitable nullity checks etc, of course :)
+                hash = hash * 23 + x.GetHashCode();
+                hash = hash * 23 + y.GetHashCode();
+                hash = hash * 23 + z.GetHashCode();
+                return hash;
+            }
+        }*/
+        // => x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode();
+
         public override string ToString() => $"({x},{y},{z})";
 
         public IEnumerator<int> GetEnumerator()
