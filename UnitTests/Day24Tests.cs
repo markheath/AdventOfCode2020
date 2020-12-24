@@ -44,7 +44,7 @@ eneswnwswnwsenenwnwnwwseeswneewsenese
 neswnwewnwnwseenwseesewsenwsweewe
 wseweeenwnesenwwwswnew".Split("\r\n");
             var answer = new Day24().Solve(testInput);
-            Assert.AreEqual(("10", ""), answer);
+            Assert.AreEqual(("10", "2208"), answer);
         }
     }
 }

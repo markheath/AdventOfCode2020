@@ -6,7 +6,7 @@ namespace AdventOfCode2020
 {
     public class Day24 : ISolver
     {
-        public (string, string) ExpectedResult => ("244", "");
+        public (string, string) ExpectedResult => ("244", "3665");
 
         // axes are n/s, ne/sw, nw,se
         //          e/w, ne/sw, nw,se
@@ -18,6 +18,47 @@ namespace AdventOfCode2020
             { "ne", (1, 0, -1) },
             { "sw", (-1, 0, 1) }
         };
+
+        public HashSet<(int,int,int)> Mutate(HashSet<(int,int,int)> state)
+        {
+            var minx = state.Min(p => p.Item1) - 1;
+            var maxx = state.Max(p => p.Item1) + 1;
+            var miny = state.Min(p => p.Item2) - 1;
+            var maxy = state.Max(p => p.Item2) + 1;
+            var minz = state.Min(p => p.Item3) - 1;
+            var maxz = state.Max(p => p.Item3) + 1;
+            var newState = new HashSet<(int, int, int)>();
+            for (int x = minx; x <= maxx; x++)
+                for (int y = miny; y <= maxy; y++)
+                    for (int z = minz; z <= maxz; z++)
+                    {
+                        var isBlack = state.Contains((x, y, z));
+                        var adjacentBlack = lookup.Values.Select(d => (x + d.Item1, y + d.Item2, z + d.Item3)).Count(p => state.Contains(p));
+                        // Any black tile with zero or more than 2 black tiles immediately adjacent to it is flipped to white.
+                        if (isBlack)
+                        {
+                            if (adjacentBlack == 0 || adjacentBlack > 2)
+                            {
+                                // flips to black
+                            }
+                            else
+                            {
+                                // stays black
+                                newState.Add((x, y, z));
+                            }
+                            // else flips to white - don't include
+                        }
+                        else
+                        {
+                            //Any white tile with exactly 2 black tiles immediately adjacent to it is flipped to black.
+                            if (adjacentBlack == 2)
+                            {
+                                newState.Add((x, y, z));
+                            }
+                        }
+                    }
+            return newState;
+        }
 
         public static (int,int,int) FollowPath(string path)
         {
@@ -58,7 +99,13 @@ namespace AdventOfCode2020
                     blackTiles.Add(pos);
             }
             var part1 = blackTiles.Count;
-            return (part1.ToString(), "");
+
+            for(int n = 0; n < 100; n++)
+            {
+                blackTiles = Mutate(blackTiles);
+            }
+
+            return (part1.ToString(), blackTiles.Count().ToString());
         }
     }
 }
