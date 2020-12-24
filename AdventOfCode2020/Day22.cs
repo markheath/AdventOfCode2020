@@ -8,8 +8,8 @@ namespace AdventOfCode2020
 {
     public class Day22 : ISolver
     {
-        public (string, string) ExpectedResult => ("32815", "");
-        private const int MaxCards = 51; // hack to solve thinking count is 0 when you have all the cards
+        public (string, string) ExpectedResult => ("32815", "30695");
+        private const int MaxCards = 50;
         public class Hand
         {
             private int readPos = 0;
@@ -17,11 +17,14 @@ namespace AdventOfCode2020
             private int[] buffer = new int[MaxCards];
             public Hand(int player, IEnumerable<int> cards)
             {
-                foreach (var c in cards) buffer[writePos++] = c;
+                foreach (var c in cards) Enqueue(c);
                 Player = player;
             }
             public int Dequeue()
             {
+                if (Count == 0)
+                    throw new InvalidOperationException("Buffer empty");
+                Count--;
                 var c = buffer[readPos++];
                 if (readPos >= buffer.Length) readPos = 0;
                 return c;
@@ -34,6 +37,8 @@ namespace AdventOfCode2020
 
             public void Enqueue(int c)
             {
+                if (Count == buffer.Length) throw new InvalidOperationException("buffer full");
+                Count++;
                 buffer[writePos++] = c;
                 if (writePos >= buffer.Length) writePos = 0;
             }
@@ -43,23 +48,14 @@ namespace AdventOfCode2020
                 return All().ToDelimitedString(",");
             }
 
-            public int Count
-            { 
-                get 
-                { 
-                    var count = writePos - readPos;
-                    if (count < 0) count += buffer.Length;
-                    return count;
-                }
-            }
+            public int Count { get; private set; }
 
             public long Score { get => All().Reverse().Select((c, index) => (long)c * (index + 1)).Sum(); }
             public int Player { get; }
 
             public IEnumerable<int> All()
             {
-                var c = Count;
-                for (var p = readPos; p < readPos + c; p++)
+                for (var p = readPos; p < readPos + Count; p++)
                 {
                     yield return buffer[p % buffer.Length];
                 }
