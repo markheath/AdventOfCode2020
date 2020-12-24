@@ -10,60 +10,39 @@ namespace AdventOfCode2020
     {
         public (string, string) ExpectedResult => ("32815", "30695");
         private const int MaxCards = 50;
+
+        
         public class Hand
         {
-            private int readPos = 0;
-            private int writePos = 0;
-            private int[] buffer = new int[MaxCards];
+            private Queue<int> buffer = new Queue<int>(MaxCards);
             public Hand(int player, IEnumerable<int> cards)
             {
-                foreach (var c in cards) Enqueue(c);
+                foreach (var c in cards) buffer.Enqueue(c);
                 Player = player;
             }
             public int Dequeue()
             {
-                if (Count == 0)
-                    throw new InvalidOperationException("Buffer empty");
-                Count--;
-                var c = buffer[readPos++];
-                if (readPos >= buffer.Length) readPos = 0;
-                return c;
+                return buffer.Dequeue();
             }
             public void Enqueue(int c1, int c2)
             {
-                Enqueue(c1);
-                Enqueue(c2);
-            }
-
-            public void Enqueue(int c)
-            {
-                if (Count == buffer.Length) throw new InvalidOperationException("buffer full");
-                Count++;
-                buffer[writePos++] = c;
-                if (writePos >= buffer.Length) writePos = 0;
+                buffer.Enqueue(c1);
+                buffer.Enqueue(c2);
             }
 
             public override string ToString()
             {
-                return All().ToDelimitedString(",");
+                return buffer.ToDelimitedString(",");
             }
 
-            public int Count { get; private set; }
+            public int Count { get => buffer.Count; }
 
-            public long Score { get => All().Reverse().Select((c, index) => (long)c * (index + 1)).Sum(); }
+            public long Score { get => buffer.Reverse().Select((c, index) => (long)c * (index + 1)).Sum(); }
             public int Player { get; }
-
-            public IEnumerable<int> All()
-            {
-                for (var p = readPos; p < readPos + Count; p++)
-                {
-                    yield return buffer[p % buffer.Length];
-                }
-            }
-
+           
             public Hand Copy(int cards)
             {
-                return new Hand(Player, All().Take(cards));
+                return new Hand(Player, buffer.Take(cards));
             }
         }
 
