@@ -10,7 +10,7 @@ namespace AdventOfCode2020
 
         // axes are n/s, ne/sw, nw,se
         //          e/w, ne/sw, nw,se
-        private static readonly Dictionary<string, (int, int, int)> lookup = new Dictionary<string, (int, int, int)> {
+        private static readonly Dictionary<string, Coord> lookup = new Dictionary<string, Coord> {
             { "nw",  (0, 1, -1) },
             { "se",  (0, -1, 1) },
             { "w", (-1, 1, 0) },
@@ -19,21 +19,22 @@ namespace AdventOfCode2020
             { "sw", (-1, 0, 1) }
         };
 
-        public HashSet<(int,int,int)> Mutate(HashSet<(int,int,int)> state)
+        public HashSet<Coord> Mutate(HashSet<Coord> state)
         {
-            var minx = state.Min(p => p.Item1) - 1;
-            var maxx = state.Max(p => p.Item1) + 1;
-            var miny = state.Min(p => p.Item2) - 1;
-            var maxy = state.Max(p => p.Item2) + 1;
-            var minz = state.Min(p => p.Item3) - 1;
-            var maxz = state.Max(p => p.Item3) + 1;
-            var newState = new HashSet<(int, int, int)>();
+            var minx = state.Min(p => p[0]) - 1;
+            var maxx = state.Max(p => p[0]) + 1;
+            var miny = state.Min(p => p[1]) - 1;
+            var maxy = state.Max(p => p[1]) + 1;
+            var minz = state.Min(p => p[2]) - 1;
+            var maxz = state.Max(p => p[2]) + 1;
+            var newState = new HashSet<Coord>();
             for (int x = minx; x <= maxx; x++)
                 for (int y = miny; y <= maxy; y++)
                     for (int z = minz; z <= maxz; z++)
                     {
-                        var isBlack = state.Contains((x, y, z));
-                        var adjacentBlack = lookup.Values.Select(d => (x + d.Item1, y + d.Item2, z + d.Item3)).Count(p => state.Contains(p));
+                        var pos = new Coord(x, y, z);
+                        var isBlack = state.Contains(pos);
+                        var adjacentBlack = lookup.Values.Select(d => d + pos).Count(p => state.Contains(p));
                         // Any black tile with zero or more than 2 black tiles immediately adjacent to it is flipped to white.
                         if (isBlack)
                         {
@@ -44,7 +45,7 @@ namespace AdventOfCode2020
                             else
                             {
                                 // stays black
-                                newState.Add((x, y, z));
+                                newState.Add(pos);
                             }
                             // else flips to white - don't include
                         }
@@ -53,19 +54,19 @@ namespace AdventOfCode2020
                             //Any white tile with exactly 2 black tiles immediately adjacent to it is flipped to black.
                             if (adjacentBlack == 2)
                             {
-                                newState.Add((x, y, z));
+                                newState.Add(pos);
                             }
                         }
                     }
             return newState;
         }
 
-        public static (int,int,int) FollowPath(string path)
+        public static Coord FollowPath(string path)
         {
-            var pos = (0, 0, 0);
-            foreach(var (x,y,z) in ParseDir(path).Select(d => lookup[d]))
+            var pos = new Coord(0, 0, 0);
+            foreach(var move in ParseDir(path).Select(d => lookup[d]))
             {
-                pos = (pos.Item1 + x, pos.Item2 + y, pos.Item3 + z);
+                pos += move;
             }
             return pos;
         }
@@ -73,7 +74,7 @@ namespace AdventOfCode2020
         // e, se, sw, w, nw, and ne
         public static IEnumerable<string> ParseDir(string input)
         {
-            for(var n =0; n < input.Length; n++)
+            for(var n = 0; n < input.Length; n++)
             {
                 if (input[n] == 'n' || input[n] == 's')
                 {
@@ -89,7 +90,7 @@ namespace AdventOfCode2020
 
         public (string, string) Solve(string[] input)
         {
-            HashSet<(int, int, int)> blackTiles = new HashSet<(int, int, int)>();
+            var blackTiles = new HashSet<Coord>();
             foreach(var line in input)
             {
                 var pos = FollowPath(line);

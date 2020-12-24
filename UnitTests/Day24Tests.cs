@@ -1,5 +1,6 @@
 ﻿using AdventOfCode2020;
 using NUnit.Framework;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace UnitTests
@@ -17,7 +18,7 @@ namespace UnitTests
         public void FollowPath()
         {
             var d = Day24.FollowPath("nwwswee");
-            Assert.AreEqual((0, 0, 0), d);
+            Assert.AreEqual(new Coord(0, 0, 0), d);
         }
 
         [Test]
@@ -45,6 +46,48 @@ neswnwewnwnwseenwseesewsenwsweewe
 wseweeenwnesenwwwswnew".Split("\r\n");
             var answer = new Day24().Solve(testInput);
             Assert.AreEqual(("10", "2208"), answer);
+        }
+
+
+        [Test]
+        public void CoordEquals()
+        {
+            Assert.AreEqual(new Coord(1, 2, 3), new Coord(1, 2, 3));
+        }
+
+        [Test]
+        public void CoordNotEquals()
+        {
+            Assert.AreNotEqual(new Coord(1, 2, 3), new Coord(1, 2, 4));
+        }
+
+        [Test]
+        public void CoordsInHashSet()
+        {
+            var hs = new HashSet<Coord>();
+            hs.Add(new Coord(1, 2, 3));
+            hs.Add((1, 2, 3));
+            Assert.AreEqual(1, hs.Count);
+            Assert.IsTrue(hs.Contains((1, 2, 3)));
+            hs.Remove((1, 2, 3));
+            Assert.AreEqual(0, hs.Count);
+            Assert.IsFalse(hs.Contains(new Coord(1, 2, 3)));
+        }
+
+        [Test]
+        public void AddCoord()
+        {
+            var c = new Coord(1, 2, 3) + (4, 5, 6);
+            Assert.AreEqual(c, new Coord(5, 7, 9));
+        }
+
+        [Test]
+        public void CoordIndexer()
+        {
+            var c = new Coord(4, 5, 6);
+            Assert.AreEqual(4, c[0]);
+            Assert.AreEqual(5, c[1]);
+            Assert.AreEqual(6, c[2]);
         }
     }
 }
