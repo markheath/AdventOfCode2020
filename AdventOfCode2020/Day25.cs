@@ -46,17 +46,6 @@ namespace AdventOfCode2020
             throw new InvalidOperationException();
         }
 
-        public void Handshake(long subjectNumber, int cardSecretLoopSize, int doorSecretLoopSize)
-        {
-            var cardPublicKey = Transform(subjectNumber, cardSecretLoopSize);
-            var doorPublicKey = Transform(subjectNumber, doorSecretLoopSize);
-
-            var encryptionKey = Transform(doorPublicKey, cardSecretLoopSize);
-            var shouldBeSameEncryptionKey = Transform(cardPublicKey, doorSecretLoopSize);
-
-
-
-        }
 
         public (string, string) Solve(string[] input)
         {
