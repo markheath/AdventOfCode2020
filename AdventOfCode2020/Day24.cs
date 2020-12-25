@@ -21,12 +21,12 @@ namespace AdventOfCode2020
 
         public HashSet<Coord> Mutate(HashSet<Coord> state)
         {
-            var minx = state.Min(p => p[0]) - 1;
-            var maxx = state.Max(p => p[0]) + 1;
-            var miny = state.Min(p => p[1]) - 1;
-            var maxy = state.Max(p => p[1]) + 1;
-            var minz = state.Min(p => p[2]) - 1;
-            var maxz = state.Max(p => p[2]) + 1;
+            var minx = state.Min(p => p.X) - 1;
+            var maxx = state.Max(p => p.X) + 1;
+            var miny = state.Min(p => p.Y) - 1;
+            var maxy = state.Max(p => p.Y) + 1;
+            var minz = state.Min(p => p.Z) - 1;
+            var maxz = state.Max(p => p.Z) + 1;
             var newState = new HashSet<Coord>();
             for (int x = minx; x <= maxx; x++)
                 for (int y = miny; y <= maxy; y++)
@@ -38,24 +38,16 @@ namespace AdventOfCode2020
                         // Any black tile with zero or more than 2 black tiles immediately adjacent to it is flipped to white.
                         if (isBlack)
                         {
-                            if (adjacentBlack == 0 || adjacentBlack > 2)
-                            {
-                                // flips to black
-                            }
-                            else
+                            if (adjacentBlack == 1 || adjacentBlack == 2)
                             {
                                 // stays black
                                 newState.Add(pos);
                             }
-                            // else flips to white - don't include
                         }
-                        else
+                        else if (adjacentBlack == 2)
                         {
                             //Any white tile with exactly 2 black tiles immediately adjacent to it is flipped to black.
-                            if (adjacentBlack == 2)
-                            {
-                                newState.Add(pos);
-                            }
+                            newState.Add(pos);
                         }
                     }
             return newState;
@@ -104,7 +96,7 @@ namespace AdventOfCode2020
                 blackTiles = Mutate(blackTiles);
             }
 
-            return (part1.ToString(), blackTiles.Count().ToString());
+            return (part1.ToString(), blackTiles.Count.ToString());
         }
     }
 }

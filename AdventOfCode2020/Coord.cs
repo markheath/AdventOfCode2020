@@ -24,7 +24,10 @@ namespace AdventOfCode2020
         private readonly int x;
         private readonly int y;
         private readonly int z;
-        
+        public int X { get => x; }
+        public int Y { get => y; }
+        public int Z { get => z; }
+
         public int this[int index]
         {
             get { return index == 0 ? x : index == 1 ? y : z;  }
