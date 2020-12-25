@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AdventOfCode2020
 {
@@ -18,7 +19,7 @@ namespace AdventOfCode2020
             return ((int)rol5 + h1) ^ h2;
         }
     }
-    public struct Coord : IEnumerable<int>
+    public struct Coord : IEnumerable<int>, IEquatable<Coord>
     {
         private readonly int x;
         private readonly int y;
@@ -71,8 +72,12 @@ namespace AdventOfCode2020
                 && c.y.Equals(y)
                 && c.z.Equals(z);
 
-        public override int GetHashCode()
-            => HashHelpers.Combine(HashHelpers.Combine(HashHelpers.Combine(HashHelpers.RandomSeed, x), y), z);
+        // Implement IEquatable<T> https://stackoverflow.com/a/8952026/7532
+        public bool Equals([AllowNull] Coord other) => x == other.x && y == other.y && z == other.z;
+
+
+        public override int GetHashCode() =>
+            HashHelpers.Combine(HashHelpers.Combine(HashHelpers.Combine(HashHelpers.RandomSeed, x), y), z);
         /*
         {
             unchecked // Overflow is fine, just wrap

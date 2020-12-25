@@ -34,7 +34,7 @@ namespace AdventOfCode2020
                     {
                         var pos = new Coord(x, y, z);
                         var isBlack = state.Contains(pos);
-                        var adjacentBlack = lookup.Values.Select(d => d + pos).Count(p => state.Contains(p));
+                        var adjacentBlack = lookup.Values.Count(d => state.Contains(d+pos));
                         // Any black tile with zero or more than 2 black tiles immediately adjacent to it is flipped to white.
                         if (isBlack)
                         {
@@ -94,9 +94,7 @@ namespace AdventOfCode2020
             foreach(var line in input)
             {
                 var pos = FollowPath(line);
-                if (blackTiles.Contains(pos)) 
-                    blackTiles.Remove(pos); 
-                else 
+                if (!blackTiles.Remove(pos)) 
                     blackTiles.Add(pos);
             }
             var part1 = blackTiles.Count;
