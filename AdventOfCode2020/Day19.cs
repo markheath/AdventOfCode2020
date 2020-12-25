@@ -12,74 +12,69 @@ namespace AdventOfCode2020
     /// </summary>
     public class Day19V2
     {
-        private string[] L; // input
-        private Dictionary<string, List<List<string>>> R = new Dictionary<string, List<List<string>>>(); // rules
-        private Dictionary<string, string> C = new Dictionary<string, string>();
+        private string[] lines;
 
         public Day19V2(string[] input)
         {
-            L = input;
+            lines = input;
         }
+        private Dictionary<string, List<List<string>>> rangeRules = new Dictionary<string, List<List<string>>>();
+        private Dictionary<string, string> constantRules = new Dictionary<string, string>();
 
-
-        /// <summary>
-        /// st = start, ed = end
-        /// </summary>
-        public bool MatchList(string line, int st, int ed, IList<string> rules)
+        public bool MatchList(string line, int start, int end, IEnumerable<string> rules)
         {
-            //var key = (st, ed, tuple(rules)); unused?
-
-            if (st == ed && rules?.Count == 0) // or rules is empty?
+            var r1 = rules.FirstOrDefault();
+            if (start == end && r1 == null)
                 return true;
-            if (st == ed)
+            if (start == end)
                 return false;
-            if (rules?.Count == 0) // or rules is empty?
+            if (r1 == null)
                 return false;
 
-            var ret = false;
-            for (var i = st + 1; i < ed + 1; i++) // range(st + 1, ed + 1):
+            for (var i = start + 1; i < end + 1; i++)
             {
-                if (Match(line, st, i, rules[0]) && MatchList(line, i, ed, rules.Skip(1).ToList()))
+                if (Match(line, start, i, r1) && MatchList(line, i, end, rules.Skip(1)))
                 {
-                    ret = true;
+                    return true; // another missed optimization
                 }
             }
-            return ret;
+            return false;
         }
 
-        private Dictionary<(int, int, string), bool> DP = new Dictionary<(int, int, string), bool>();
+        // memoize this function
+        private Dictionary<(int, int, string), bool> history = new Dictionary<(int, int, string), bool>();
         private bool Match(string line, int st, int ed, string rule)
         {
             var key = (st, ed, rule);
-            if (DP.ContainsKey(key))
+            if (history.ContainsKey(key))
             {
-                return DP[key];
+                return history[key];
             }
 
             var ret = false;
-            if (C.ContainsKey(rule))
+            if (constantRules.ContainsKey(rule))
             {
-                ret = line[st..ed] == C[rule]; 
+                ret = line[st..ed] == constantRules[rule]; 
             }
             else
             {
-                foreach (var option in R[rule])
+                foreach (var options in rangeRules[rule])
                 {
-                    if (MatchList(line, st, ed, option))
+                    if (MatchList(line, st, ed, options))
                     {
                         ret = true;
                         break; // missing optimization to break? - didn't save a lot of time
                     }
                 }
             }
-            DP[key] = ret;
+            history[key] = ret;
             return ret;
         }
 
         public int Solve(bool part2)
         {
             var ans = 0;
-            foreach(var line in L)
+            foreach(var line in lines)
             {
                 if (line.Contains(':'))
                 {
@@ -93,16 +88,16 @@ namespace AdventOfCode2020
                     else
                         rest = words.Skip(1).ToDelimitedString(" ");
                     if (rest.Contains('"'))
-                        C[name] = rest[1..^1];
+                        constantRules[name] = rest[1..^1];
                     else
                     {
                         var options = rest.Split(" | ");
-                        R[name] = options.Select(x => x.Split().ToList()).ToList(); //   [x.split(' ') for x in options]
+                        rangeRules[name] = options.Select(x => x.Split().ToList()).ToList();
                     }
                 }
                 else if (!String.IsNullOrEmpty(line))
                 {
-                    DP.Clear();
+                    history.Clear();
                     if(Match(line, 0, line.Length, "0"))
                     {
                         ans += 1;
