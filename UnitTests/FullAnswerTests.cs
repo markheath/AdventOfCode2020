@@ -1,8 +1,6 @@
 ﻿using AdventOfCode2020;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace UnitTests
@@ -12,7 +10,7 @@ namespace UnitTests
         public static IEnumerable<TestCaseData> FindTests()
         {
             return Utils.FindAllSolvers()
-                .Select(s => new TestCaseData(s.Item1, s.Item2).SetName(s.Item1.GetType().Name));
+                .Select(s => new TestCaseData(s.Solver, s.Input).SetName(s.Solver.GetType().Name));
         }
 
         [TestCaseSource(nameof(FindTests))]

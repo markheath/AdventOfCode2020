@@ -19,7 +19,7 @@ namespace UnitTests
 3: 4 5 | 5 4
 4: ""a""
 5: ""b""".Split("\r\n").Append(message).ToArray();
-            var matches = new Day19().Solve(testInput).Item1;
+            var matches = new Day19().Solve(testInput).Part1;
             Assert.AreEqual(valid ? "1" : "0", matches);
         }
 
@@ -38,7 +38,7 @@ bababa
 abbbab
 aaabbb
 aaaabbb".Split("\r\n");
-            Assert.AreEqual("2", new Day19().Solve(testInput).Item1);
+            Assert.AreEqual("2", new Day19().Solve(testInput).Part1);
         }
 
         [Test]
@@ -92,8 +92,8 @@ aaaabbaabbaaaaaaabbbabbbaaabbaabaaa
 babaaabbbaaabaababbaabababaaab
 aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba".Split("\r\n");
             var answer = new Day19().Solve(testInput);
-            Assert.AreEqual("3", answer.Item1, "part 1");
-            Assert.AreEqual("12", answer.Item2, "part 2");
+            Assert.AreEqual("3", answer.Part1, "part 1");
+            Assert.AreEqual("12", answer.Part2, "part 2");
         }
 
     }

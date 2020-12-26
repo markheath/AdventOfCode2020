@@ -5,7 +5,7 @@ namespace AdventOfCode2020
 {
     public class Day25 : ISolver
     {
-        public (string, string) ExpectedResult => ("6408263", "");
+        public (string Part1, string Part2) ExpectedResult => ("6408263", "");
 
         public long Transform(long subject, int loopSize)
         {
@@ -20,7 +20,7 @@ namespace AdventOfCode2020
             return value;
         }
 
-        public (int,long) Search(long subject, long pk1, long pk2)
+        public (int LoopSize, long PublicKey) Search(long subject, long pk1, long pk2)
         {
             var value = 1L;
             for (var loopSize = 1; true; loopSize++)
@@ -47,7 +47,7 @@ namespace AdventOfCode2020
         }
 
 
-        public (string, string) Solve(string[] input)
+        public (string Part1, string Part2) Solve(string[] input)
         {
             var cardPublicKey = long.Parse(input[0]);
             var doorPublicKey = long.Parse(input[1]);

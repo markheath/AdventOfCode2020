@@ -52,9 +52,9 @@ namespace AdventOfCode2020
         }
 
         public static implicit operator (int, int)(Coord c) => (c.x,c.y);
-        public static implicit operator Coord((int, int) c) => new Coord(c.Item1, c.Item2);
+        public static implicit operator Coord((int X, int Y) c) => new Coord(c.X, c.Y);
         public static implicit operator (int, int, int)(Coord c) => (c.x, c.y, c.z);
-        public static implicit operator Coord((int, int, int) c) => new Coord(c.Item1, c.Item2, c.Item3);
+        public static implicit operator Coord((int X, int Y, int Z) c) => new Coord(c.X, c.Y, c.Z);
 
         public void Deconstruct(out int x, out int y)
         {

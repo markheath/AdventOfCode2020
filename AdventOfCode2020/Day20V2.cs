@@ -9,8 +9,8 @@ namespace AdventOfCode2020
     // based on solution by AlaskanShade with minor changes
     public class Day20 : ISolver
     {
-        public (string, string) ExpectedResult => ("79412832860579", "2155"); 
-        public (string, string) Solve(string[] input)
+        public (string Part1, string Part2) ExpectedResult => ("79412832860579", "2155"); 
+        public (string Part1, string Part2) Solve(string[] input)
         {
             // Parse the tiles
             var tiles = input.Split("").Select(g => new Tile(g.ToArray())).ToArray();

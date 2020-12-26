@@ -25,7 +25,7 @@ namespace UnitTests
             var testInput = @"5764801
 17807724".Split("\r\n");
             var answer = new Day25().Solve(testInput);
-            Assert.AreEqual("14897079", answer.Item1);
+            Assert.AreEqual("14897079", answer.Part1);
         }
     }
 }

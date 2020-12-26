@@ -21,7 +21,7 @@ namespace AdventOfCode2020
             return FindPath(fileName, parent.FullName);
         }
 
-        public static IEnumerable<(ISolver, string[])> FindAllSolvers()
+        public static IEnumerable<(ISolver Solver, string[] Input)> FindAllSolvers()
         {
             var solvers = typeof(Day1).Assembly.GetTypes()
                 .Where(t => t.IsClass && typeof(ISolver).IsAssignableFrom(t))

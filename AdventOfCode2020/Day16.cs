@@ -104,8 +104,8 @@ namespace AdventOfCode2020
         {
             private readonly string rule;
             public override string ToString() => rule;
-            private (int, int) range1;
-            private (int, int) range2;
+            private (int Start, int End) range1;
+            private (int Start, int End) range2;
             public Rule(string rule)
             {
                 var idx = rule.IndexOf(':');
@@ -118,8 +118,8 @@ namespace AdventOfCode2020
             public string Name { get; }
             public bool IsValid(int value)
             {
-                return (value >= range1.Item1 && value <= range1.Item2) ||
-                    (value >= range2.Item1 && value <= range2.Item2);
+                return (value >= range1.Start && value <= range1.End) ||
+                    (value >= range2.Start && value <= range2.End);
             }
 
         }

@@ -49,7 +49,7 @@ namespace AdventOfCode2020
         {
             var (jump1,jump3) = adapters
                 .Pairwise((a, b) => b - a)
-                .Aggregate((0, 0), (acc, n) => n == 1 ? (acc.Item1 + 1, acc.Item2) : n == 3 ? (acc.Item1, acc.Item2 + 1) : acc);
+                .Aggregate((Jump1: 0, Jump3: 0), (acc, n) => n == 1 ? (acc.Jump1 + 1, acc.Jump3) : n == 3 ? (acc.Jump1, acc.Jump3 + 1) : acc);
             return jump1 * jump3;
         }
 

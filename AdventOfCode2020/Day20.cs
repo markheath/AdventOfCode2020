@@ -24,11 +24,11 @@ namespace AdventOfCode2020
             public Dictionary<Side, (string,string)> Matchers { get; } = new Dictionary<Side, (string,string)>();
             public Tile(IEnumerable<string> input)
             {
-                int Int(string s) => int.Parse(Regex.Match(s, "\\d+").Value);
+                static int Int(string s) => int.Parse(Regex.Match(s, "\\d+").Value);
                 Id = Int(input.First());
                 Pattern = input.Skip(1).ToArray();
                 Matchers[Side.Top] = (Pattern[0], new string(Pattern[0].Reverse().ToArray()));
-                Matchers[Side.Bottom] = (Pattern[Pattern.Length - 1],new string(Pattern[Pattern.Length - 1].Reverse().ToArray()));
+                Matchers[Side.Bottom] = (Pattern[^1], new string(Pattern[^1].Reverse().ToArray()));
                 var left = new string(Pattern.Select(s => s[0]).ToArray());
                 Matchers[Side.Left] = (left, new string(left.Reverse().ToArray()));
                 var right = new string(Pattern.Select(s => s.Last()).ToArray());
@@ -37,7 +37,7 @@ namespace AdventOfCode2020
             public int Id { get; }
             public string[] Pattern { get; }
            
-            public IEnumerable<(Side,string,bool)> AvailableSides()
+            public IEnumerable<(Side Side, string Matcher, bool Reversed)> AvailableSides()
             {
                 foreach (var side in Enum.GetValues(typeof(Side)).Cast<Side>().Where(s => !Connected.ContainsKey(s)))
                 {
@@ -64,10 +64,10 @@ namespace AdventOfCode2020
                 foreach(var pair in AvailableSides().Cartesian(other.AvailableSides(), (a,b) => 
                     new { a,b }))
                 {
-                    if (pair.a.Item2 == pair.b.Item2)
+                    if (pair.a.Matcher == pair.b.Matcher)
                     {
-                        Connect(pair.a.Item1, other, pair.a.Item3);
-                        other.Connect(pair.b.Item1, this, pair.b.Item3);
+                        Connect(pair.a.Side, other, pair.a.Reversed);
+                        other.Connect(pair.b.Side, this, pair.b.Reversed);
                         break;
                     }
                 }

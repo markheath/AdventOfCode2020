@@ -2,7 +2,7 @@
 {
     public interface ISolver
     {
-        public (string,string) Solve(string[] input);
-        public (string, string) ExpectedResult { get; }
+        public (string Part1, string Part2) Solve(string[] input);
+        public (string Part1, string Part2) ExpectedResult { get; }
     }
 }

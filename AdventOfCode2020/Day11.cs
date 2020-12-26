@@ -16,8 +16,8 @@ namespace AdventOfCode2020
             }
             return map[r][c];
         }
-        public static (int, int) Add(this (int, int) a, (int, int) b)
-            => (a.Item1 + b.Item1, a.Item2 + b.Item2);
+        public static (int X, int Y) Add(this (int X, int Y) a, (int X, int Y) b)
+            => (a.X + b.X, a.Y + b.Y);
     }
 
 

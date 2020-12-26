@@ -11,9 +11,9 @@ namespace AdventOfCode2020
     /// </summary>
     public class Day19 : ISolver
     {
-        public (string, string) ExpectedResult => ("156", "363");
+        public (string Part1, string Part2) ExpectedResult => ("156", "363");
 
-        public (string, string) Solve(string[] input)
+        public (string Part1, string Part2) Solve(string[] input)
         {
             var part1 = Solve(input, false);
             var part2 = Solve(input, true);
@@ -43,7 +43,7 @@ namespace AdventOfCode2020
         }
 
         // memoize this function
-        private Dictionary<(int, int, string), bool> history = new Dictionary<(int, int, string), bool>();
+        private readonly Dictionary<(int, int, string), bool> history = new Dictionary<(int, int, string), bool>();
         private bool Match(string line, int st, int ed, string rule)
         {
             var key = (st, ed, rule);
