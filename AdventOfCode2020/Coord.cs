@@ -2,15 +2,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace AdventOfCode2020
 {
+
+    // https://github.com/dotnet/runtime - may be better
+    // https://github.com/dotnet/runtime/blob/master/src/libraries/System.Private.CoreLib/src/System/HashCode.cs
 
     // https://github.com/dotnet/roslyn/blob/master/src/Compilers/Test/Resources/Core/NetFX/ValueTuple/ValueTuple.cs
     internal static class HashHelpers
     {
         public static readonly int RandomSeed = new Random().Next(int.MinValue, int.MaxValue);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Combine(int h1, int h2)
         {
             // RyuJIT optimizes this to use the ROL instruction
@@ -79,20 +84,19 @@ namespace AdventOfCode2020
         public bool Equals([AllowNull] Coord other) => x == other.x && y == other.y && z == other.z;
 
 
-        public override int GetHashCode() =>
-            HashHelpers.Combine(HashHelpers.Combine(HashHelpers.Combine(HashHelpers.RandomSeed, x), y), z);
-        /*
+        public override int GetHashCode() 
+//            => HashHelpers.Combine(HashHelpers.Combine(HashHelpers.Combine(HashHelpers.RandomSeed, x), y), z);
         {
+        // based on Jon Skeet - hashcode of an int is just its value
             unchecked // Overflow is fine, just wrap
             {
                 int hash = 17;
-                // Suitable nullity checks etc, of course :)
-                hash = hash * 23 + x.GetHashCode();
-                hash = hash * 23 + y.GetHashCode();
-                hash = hash * 23 + z.GetHashCode();
+                hash = hash * 23 + x;
+                hash = hash * 23 + y;
+                hash = hash * 23 + z;
                 return hash;
             }
-        }*/
+        }
         // => x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode();
 
         public override string ToString() => $"({x},{y},{z})";
